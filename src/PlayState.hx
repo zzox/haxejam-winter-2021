@@ -27,9 +27,7 @@ class PlayState extends FlxState {
             gravity_y: 400
         });
 
-        // final ball = new Ball(8, 4);
-        final player = new Player(32, 4);
-        player.add_body({ shape: { type: CIRCLE, radius: 7 }, elasticity: 1 });
+        final player = new Player(8, 4);
         add(player);
 
         var terrain = new FlxGroup();

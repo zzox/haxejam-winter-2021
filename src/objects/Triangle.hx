@@ -10,7 +10,6 @@ using flixel.util.FlxSpriteUtil;
 
 class Triangle extends FlxSprite {
     public function new(x:Float, y:Float, w:Int, h:Int, d:TriangleDir) {
-        trace('$x / $y / $w / $h');
         super(x, y);
         makeGraphic(w, h, 0x00FFFFFF);
         var verts = [ [0, 0], [w, 0], [w, h], [0, h] ];
