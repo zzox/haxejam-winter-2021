@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 
 using echo.FlxEcho;
+using hxmath.math.Vector2;
 
 typedef HoldsObj = {
     var left:Float;
@@ -18,19 +19,24 @@ enum PlayerState {
 
 class Player extends FlxSprite {
     static inline final BALL_ACCELERATION = 50;
+
+    var scene:PlayState;
+    var state:PlayerState = Ball;
+    public var compVel:Float = 0;
     var holds:HoldsObj = {
         left: 0,
         right: 0
     };
 
-    var state:PlayerState = Ball;
-
-    public function new (x:Int, y:Int) {
+    public function new (x:Int, y:Int, scene:PlayState) {
         super(x, y);
         this.add_body({ shape: { type: CIRCLE, radius: 8 }, elasticity: 1 });
         loadGraphic(AssetPaths.ball1__png, true, 16, 16);
         animation.add('roll', [0, 1], 12);
+        animation.add('glide', [0, 1], 12);
         animation.play('roll');
+
+        this.scene = scene;
     }
 
     override public function update (elapsed:Float) {
@@ -38,8 +44,8 @@ class Player extends FlxSprite {
 
         super.update(elapsed);
 
-        var body:Body = this.get_body();
-        trace(body.velocity);
+        var vel:Vector2 = scene.player.get_body().velocity;
+        compVel = Math.sqrt(Math.pow(vel.x, 2) + Math.pow(vel.y, 2));
     }
 
     function handleInput (elapsed:Float) {

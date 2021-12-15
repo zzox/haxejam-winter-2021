@@ -1,3 +1,4 @@
+import display.Hud;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.addons.editors.tiled.TiledMap;
@@ -13,6 +14,7 @@ using flixel.util.FlxSpriteUtil;
 using hxmath.math.Vector2;
 
 class PlayState extends FlxState {
+    public var player:Player;
     override public function create() {
         super.create();
 
@@ -24,13 +26,13 @@ class PlayState extends FlxState {
         FlxEcho.init({
             width: map.fullWidth,	// Make the size of your Echo world equal the size of your play field
             height: map.fullHeight,
-            gravity_y: 400
+            gravity_y: 600
         });
 
-        final player = new Player(8, 4);
+        player = new Player(8, 4, this);
         add(player);
 
-        var terrain = new FlxGroup();
+        final terrain = new FlxGroup();
         add(terrain);
 
         // MD: ?
@@ -39,6 +41,9 @@ class PlayState extends FlxState {
         createSquares(map, terrain);
 
         player.listen(terrain); // callback for crashing
+
+        final hud = new Hud(this);
+        add(hud);
 
         FlxG.camera.setScrollBounds(0, map.fullWidth, 0, map.fullHeight);
         FlxG.camera.follow(player);
