@@ -4,7 +4,10 @@ import flixel.FlxState;
 import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectLayer;
+import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.group.FlxGroup;
+import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
+import flixel.tile.FlxTilemap;
 import objects.Box;
 import objects.Player;
 import objects.Triangle;
@@ -15,6 +18,8 @@ using hxmath.math.Vector2;
 
 class PlayState extends FlxState {
     public var player:Player;
+    var terrain:FlxGroup;
+
     override public function create() {
         super.create();
 
@@ -29,18 +34,19 @@ class PlayState extends FlxState {
             gravity_y: 600
         });
 
-        player = new Player(8, 4, this);
-        add(player);
-
-        final terrain = new FlxGroup();
+        terrain = new FlxGroup();
         add(terrain);
 
-        // MD: ?
         createTriangles(map, SouthWest, terrain);
         createTriangles(map, SouthEast, terrain);
         createSquares(map, terrain);
 
-        player.listen(terrain); // callback for crashing
+        add(createTileLayer(map, 'tiles'));
+
+        player = new Player(8, 4, this);
+        add(player);
+
+        collisionListen();
 
         final hud = new Hud(this);
         add(hud);
@@ -51,6 +57,10 @@ class PlayState extends FlxState {
 
     override public function update(elapsed:Float) {
         super.update(elapsed);
+    }
+
+    public function collisionListen () {
+        player.listen(terrain);
     }
 
     function createTriangles (map:TiledMap, dir:TriangleDir, terrain:FlxGroup) {
@@ -82,5 +92,18 @@ class PlayState extends FlxState {
                 return square;
             });
         }
+    }
+
+    function createTileLayer (map:TiledMap, layerName:String):Null<FlxTilemap> {
+        var layerData = map.getLayer(layerName);
+        if (layerData != null) {
+            var layer = new FlxTilemap();
+            layer.loadMapFromArray(cast(layerData, TiledTileLayer).tileArray, map.width, map.height,
+                AssetPaths.tiles__png, map.tileWidth, map.tileHeight, FlxTilemapAutoTiling.OFF, 1, 1, 1);
+
+            layer.useScaleHack = false;
+            return layer;
+        }
+        return null;
     }
 }

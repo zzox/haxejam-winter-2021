@@ -27,7 +27,7 @@ class Player extends FlxSprite {
     static inline final MAX_GLIDE_Y_VEL = 100;
 
     var scene:PlayState;
-    var state:PlayerState = Ball;
+    var state:PlayerState = Glide;
     public var compVel:Float = 0;
     var holds:HoldsObj = {
         left: 0,
@@ -39,10 +39,6 @@ class Player extends FlxSprite {
     public function new (x:Int, y:Int, scene:PlayState) {
         super(x, y);
         this.scene = scene;
-        this.add_body({
-            shape: { type: CIRCLE, radius: 8 },
-            elasticity: 1,
-        });
         loadGraphic(AssetPaths.ball1__png, true, 16, 16);
         animation.add('ball-still', [0]);
         animation.add('roll-slow', [0, 1], 2);
@@ -51,7 +47,7 @@ class Player extends FlxSprite {
         animation.add('glide', [2, 3], 12);
         animation.play('roll');
 
-        // switchState(true);
+        switchState(true);
     }
 
     override public function update (elapsed:Float) {
@@ -88,12 +84,21 @@ class Player extends FlxSprite {
     function switchState (skip = false) {
         final body = this.get_body();
 
+        // needed?
+        var bodyVelX = 0.;
+        var bodyVelY = 0.;
+        if (body != null) {
+            bodyVelX = body.velocity.x;
+            bodyVelY = body.velocity.y;
+        }
+
+        scene.removeMe();
         if (state == Ball) {
             this.add_body({
-                velocity_x: body.velocity.x,
-                velocity_y: body.velocity.y,
+                velocity_x: bodyVelX,
+                velocity_y: bodyVelY,
                 shape: { type: CIRCLE, radius: 8 },
-                elasticity: 0,
+                elasticity: 1,
                 gravity_scale: 0.1
             });
             animation.play('glide');
@@ -101,17 +106,19 @@ class Player extends FlxSprite {
             state = Glide;
         } else {
             this.add_body({
-                velocity_x: body.velocity.x,
-                velocity_y: body.velocity.y,
+                velocity_x: bodyVelX,
+                velocity_y: bodyVelY,
                 shape: { type: CIRCLE, radius: 8 },
-                elasticity: 1
+                elasticity: 0
             });
             animation.play('roll');
             state = Ball;
             this.get_body().max_velocity.set(0, 100);
         }
 
-        scene.collisionListen();
+        if (!skip) {
+            scene.collisionListen();
+        }
     }
 
     function handleAnimation () {
