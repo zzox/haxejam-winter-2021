@@ -8,6 +8,7 @@ import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
 import flixel.tile.FlxTilemap;
+import flixel.util.FlxTimer;
 import objects.Box;
 import objects.Player;
 import objects.Triangle;
@@ -57,6 +58,11 @@ class PlayState extends FlxState {
 
     override public function update(elapsed:Float) {
         super.update(elapsed);
+
+        final world = FlxEcho.instance.world;
+        if (player.x > world.width || player.x < -16 || player.y > world.height) {
+            lostLevel();
+        }
     }
 
     public function collisionListen () {
@@ -105,5 +111,14 @@ class PlayState extends FlxState {
             return layer;
         }
         return null;
+    }
+
+    function lostLevel () {
+        // show lose prompt
+        // transition
+
+        new FlxTimer().start(1, (_:FlxTimer) -> {
+            FlxG.switchState(new PlayState());
+        });
     }
 }
