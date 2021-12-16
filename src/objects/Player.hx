@@ -29,6 +29,8 @@ class Player extends FlxSprite {
     var scene:PlayState;
     var state:PlayerState = Ball;
     public var compVel:Float = 0;
+    public var xVel:Float = 0;
+    public var yVel:Float = 0;
     var holds:HoldsObj = {
         left: 0,
         right: 0,
@@ -67,22 +69,14 @@ class Player extends FlxSprite {
 
         if (state == Glide) {
             flipX = this.get_body().velocity.x < 0;
-
-            // doing our own max velocity setting
-            if (vel.y > MAX_GLIDE_Y_VEL) {
-                this.get_body().velocity.y = MAX_GLIDE_Y_VEL;
-            }
-
-            if (vel.y < -MAX_GLIDE_Y_VEL) {
-                this.get_body().velocity.y = -MAX_GLIDE_Y_VEL;
-            }
         }
-
-        trace(this.get_body().elasticity, state);
 
         super.update(elapsed);
 
+        // for access from HUD
         compVel = Math.sqrt(Math.pow(vel.x, 2) + Math.pow(vel.y, 2));
+        xVel = vel.x;
+        yVel = vel.y;
     }
 
     function switchState (skip = false) {
@@ -92,6 +86,7 @@ class Player extends FlxSprite {
             this.add_body({
                 velocity_x: body.velocity.x,
                 velocity_y: body.velocity.y,
+                max_velocity_y: 100,
                 shape: { type: CIRCLE, radius: 8 },
                 elasticity: 0,
                 gravity_scale: 0.1
@@ -104,11 +99,11 @@ class Player extends FlxSprite {
                 velocity_x: body.velocity.x,
                 velocity_y: body.velocity.y,
                 shape: { type: CIRCLE, radius: 8 },
-                elasticity: 1
+                elasticity: 1,
+                gravity_scale: 1
             });
             animation.play('roll');
             state = Ball;
-            this.get_body().max_velocity.set(0, 100);
         }
 
         scene.collisionListen();
@@ -186,12 +181,14 @@ class Player extends FlxSprite {
             // TODO: play different animations depending on going up or down
             if (yVel == 1) {
                 this.get_body().acceleration.set(xVel * BALL_ACCELERATION, GLIDE_ACCELERATION);
+                this.get_body().drag.set(0, 0);
             } else if (yVel == -1) {
-                // weird function where you can only have upward acceleration if you're going fast enough
+                // weird stuff where you can only have upward acceleration if you're going fast enough
                 final calcUpAccel = Math.abs(this.get_body().velocity.x) - GLIDE_ACCELERATION;
                 this.get_body().acceleration.set(0, calcUpAccel > 0 ? -calcUpAccel : 0);
                 this.get_body().drag.set(25, 0);
             } else {
+                this.get_body().drag.set(0, 0);
                 this.get_body().acceleration.set(0, 0);
             }
         }

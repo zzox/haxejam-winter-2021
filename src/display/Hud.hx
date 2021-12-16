@@ -31,6 +31,8 @@ class Hud extends FlxGroup {
         super.update(elapsed);
 
         final speedText = Math.floor(scene.player.compVel);
-        speed.text = '$speedText pps';
+        final xVel = Math.round(scene.player.xVel);
+        final yVel = Math.round(scene.player.yVel);
+        speed.text = '$speedText pps x:$xVel | y:$yVel';
     }
 }
