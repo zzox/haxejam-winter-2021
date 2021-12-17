@@ -1,4 +1,6 @@
 import display.Hud;
+import echo.Body;
+import echo.data.Data.CollisionData;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.addons.editors.tiled.TiledMap;
@@ -17,7 +19,13 @@ using echo.FlxEcho;
 using flixel.util.FlxSpriteUtil;
 using hxmath.math.Vector2;
 
+enum Results {
+    Win;
+    Lose;
+}
+
 class PlayState extends FlxState {
+    var result:Results;
     public var player:Player;
     var terrain:FlxGroup;
 
@@ -66,7 +74,11 @@ class PlayState extends FlxState {
     }
 
     public function collisionListen () {
-        player.listen(terrain);
+        player.listen(terrain, { enter: (_:Body, _:Body, d:Array<CollisionData>) -> {
+            if (player.state == Glide) {
+                lostLevel();
+            }
+        }});
     }
 
     function createTriangles (map:TiledMap, dir:TriangleDir, terrain:FlxGroup) {
@@ -114,11 +126,23 @@ class PlayState extends FlxState {
     }
 
     function lostLevel () {
+        if (result != null) {
+            return;
+        }
+
+        result = Lose;
+
         // show lose prompt
         // transition
+
+        FlxG.camera.follow(null);
+
+        player.visible = false;
 
         new FlxTimer().start(1, (_:FlxTimer) -> {
             FlxG.switchState(new PlayState());
         });
     }
+
+    function winLevel () {}
 }

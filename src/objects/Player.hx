@@ -23,11 +23,11 @@ enum PlayerState {
 
 class Player extends FlxSprite { 
     static inline final BALL_ACCELERATION = 50;
-    static inline final GLIDE_ACCELERATION = 250;
+    static inline final GLIDE_ACCELERATION = 500;
     static inline final MAX_GLIDE_Y_VEL = 100;
 
     var scene:PlayState;
-    var state:PlayerState = Ball;
+    public var state:PlayerState = Ball;
     public var compVel:Float = 0;
     public var xVel:Float = 0;
     public var yVel:Float = 0;
@@ -86,7 +86,7 @@ class Player extends FlxSprite {
             this.add_body({
                 velocity_x: body.velocity.x,
                 velocity_y: body.velocity.y,
-                max_velocity_y: 100,
+                max_velocity_y: 200,
                 shape: { type: CIRCLE, radius: 8 },
                 elasticity: 0,
                 gravity_scale: 0.1
@@ -184,7 +184,7 @@ class Player extends FlxSprite {
                 this.get_body().drag.set(0, 0);
             } else if (yVel == -1) {
                 // weird stuff where you can only have upward acceleration if you're going fast enough
-                final calcUpAccel = Math.abs(this.get_body().velocity.x) - GLIDE_ACCELERATION;
+                final calcUpAccel = Math.abs(this.get_body().velocity.x) - GLIDE_ACCELERATION * 0.33;
                 this.get_body().acceleration.set(0, calcUpAccel > 0 ? -calcUpAccel : 0);
                 this.get_body().drag.set(25, 0);
             } else {
