@@ -31,7 +31,7 @@ class PlayState extends FlxState {
     var result:Results;
     public var player:Player;
     var terrain:FlxGroup;
-    var end:FlxSprite;
+    public var end:FlxSprite;
 
     override public function create() {
         super.create();
@@ -90,7 +90,7 @@ class PlayState extends FlxState {
             if (player.state == Glide) {
                 lostLevel();
             } else {
-                trace(d[0].normal);
+                // play sound
             }
         }});
     }
@@ -98,15 +98,9 @@ class PlayState extends FlxState {
     function createEnd (map:TiledMap) {
         final endPos = cast(map.getLayer('end'), TiledObjectLayer).objects[0];
         end = new FlxSprite(endPos.x, endPos.y);
-        end.makeGraphic(16, 64, 0xffff0000);
-        end.add_body({
-            mass: 0,
-            shape: {
-                type: RECT,
-                height: 64,
-                width: 16
-            }
-        });
+        end.loadGraphic(AssetPaths.end_ring__png, true, 16, 64);
+        end.animation.add('spin', [0, 1, 2, 3], 12);
+        end.animation.play('spin');
     }
 
     function createTriangles (map:TiledMap, dir:TriangleDir, terrain:FlxGroup) {
