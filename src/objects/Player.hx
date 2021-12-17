@@ -52,7 +52,8 @@ class Player extends FlxSprite {
         animation.add('roll-medium', [0, 1], 6);
         animation.add('roll-fast', [0, 1], 12);
         animation.add('glide', [2, 3], 12);
-        animation.play('roll');
+        animation.add('glide-still', [4]);
+        animation.play('ball-still');
     }
 
     override public function update (elapsed:Float) {
@@ -61,12 +62,15 @@ class Player extends FlxSprite {
             if (FlxG.keys.anyJustPressed([SPACE, Z, TAB])) {
                 switchState();
             }
+        } else if (scene.result == Lose) {
+            this.get_body().velocity.set(0, 0);
+            this.get_body().acceleration.set(0, 0);
         }
         handleAnimation();
 
         var vel:Vector2 = this.get_body().velocity;
 
-        if (state == Glide) {
+        if (state == Glide && scene.result != Lose) {
             flipX = this.get_body().velocity.x < 0;
         }
 
@@ -86,7 +90,7 @@ class Player extends FlxSprite {
                 velocity_x: body.velocity.x,
                 velocity_y: body.velocity.y,
                 max_velocity_y: 200,
-                shape: { type: CIRCLE, radius: 8 },
+                shape: { type: CIRCLE, radius: 4 },
                 elasticity: 0,
                 gravity_scale: 0.1
             });
@@ -101,7 +105,6 @@ class Player extends FlxSprite {
                 elasticity: 1,
                 gravity_scale: 1
             });
-            animation.play('roll');
             state = Ball;
         }
 
@@ -109,15 +112,19 @@ class Player extends FlxSprite {
     }
 
     function handleAnimation () {
-        if (state == Ball) {
-            if (compVel < 1) {
-                animation.play('ball-still');
-            } else if (compVel < 25) {
-                animation.play('roll-slow');
-            } else if (compVel < 100) {
-                animation.play('roll-medium');
-            } else {
-                animation.play('roll-fast');
+        if (scene.result == Lose) {
+            animation.play('glide-still');
+        } else {
+            if (state == Ball) {
+                if (compVel < 1) {
+                    animation.play('ball-still');
+                } else if (compVel < 25) {
+                    animation.play('roll-slow');
+                } else if (compVel < 100) {
+                    animation.play('roll-medium');
+                } else {
+                    animation.play('roll-fast');
+                }
             }
         }
     }

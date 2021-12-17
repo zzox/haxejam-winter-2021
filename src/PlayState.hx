@@ -68,7 +68,7 @@ class PlayState extends FlxState {
 
         add(createTileLayer(map, 'tiles'));
 
-        player = new Player(8, 4, this);
+        player = new Player(16, 4, this);
         add(player);
 
         collisionListen();
@@ -99,11 +99,12 @@ class PlayState extends FlxState {
     }
 
     public function collisionListen () {
-        player.listen(terrain, { enter: (_:Body, _:Body, d:Array<CollisionData>) -> {
+        player.listen(terrain, { enter: (playerBody:Body, _:Body, d:Array<CollisionData>) -> {
             if (player.state == Glide) {
                 lostLevel();
             } else {
                 // play sound
+                trace(Math.abs(player.xVel - playerBody.velocity.x) + Math.abs(player.yVel - playerBody.velocity.y));
             }
         }});
     }
@@ -173,7 +174,7 @@ class PlayState extends FlxState {
 
         result = Lose;
         FlxG.camera.follow(null);
-        player.visible = false;
+        player.canMove = false;
         new FlxTimer().start(1, (_:FlxTimer) -> {
             FlxG.switchState(new PlayState());
         });
