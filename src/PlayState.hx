@@ -1,3 +1,4 @@
+import data.Game;
 import display.Hud;
 import echo.Body;
 import echo.data.Data.CollisionData;
@@ -11,6 +12,8 @@ import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
 import flixel.tile.FlxTilemap;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
 import objects.Box;
 import objects.Player;
@@ -39,7 +42,8 @@ class PlayState extends FlxState {
         camera.pixelPerfectRender = true;
 
         // MD:
-        var map = new TiledMap(AssetPaths.map_1__tmx);
+        final level = Game.levels[Game.state.level];
+        var map = new TiledMap(level.path);
 
         FlxEcho.init({
             width: map.fullWidth,	// Make the size of your Echo world equal the size of your play field
@@ -73,7 +77,12 @@ class PlayState extends FlxState {
         add(hud);
 
         FlxG.camera.setScrollBounds(0, map.fullWidth, 0, map.fullHeight);
-        FlxG.camera.follow(player);
+
+        if (Game.state.seenLevel) { 
+            seenLevel();
+        } else {
+            showLevel();
+        }
     }
 
     override public function update(elapsed:Float) {
@@ -183,5 +192,39 @@ class PlayState extends FlxState {
 
         result = Win;
         FlxG.camera.follow(null);
+        Game.state.seenLevel = false;
+    }
+
+    function showLevel () {
+        new FlxTimer().start(1, (_:FlxTimer) -> {
+            FlxTween.tween(
+                camera,
+                {
+                    "scroll.x": end.x - (camera.width * 0.5),
+                    "scroll.y": end.y - (camera.height * 0.5),
+                },
+                3,
+                { ease: FlxEase.cubeInOut }
+            ).then(FlxTween.tween(
+                camera,
+                {
+                    "scroll.x": 0,
+                    "scroll.y": 0,
+                },
+                3,
+                {
+                    ease: FlxEase.cubeInOut,
+                    onComplete: (_:FlxTween) -> {
+                        seenLevel();
+                    }
+                }
+            ));
+        });
+    }
+
+    function seenLevel () {
+        FlxG.camera.follow(player);
+        player.canMove = true;
+        Game.state.seenLevel = true;
     }
 }

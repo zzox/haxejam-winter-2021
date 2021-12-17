@@ -31,6 +31,7 @@ class Player extends FlxSprite {
     public var compVel:Float = 0;
     public var xVel:Float = 0;
     public var yVel:Float = 0;
+    public var canMove:Bool = false;
     var holds:HoldsObj = {
         left: 0,
         right: 0,
@@ -52,18 +53,16 @@ class Player extends FlxSprite {
         animation.add('roll-fast', [0, 1], 12);
         animation.add('glide', [2, 3], 12);
         animation.play('roll');
-
-        // switchState(true);
     }
 
     override public function update (elapsed:Float) {
-        handleInput(elapsed);
-        handleAnimation();
-
-        // TODO: toggle mode?
-        if (FlxG.keys.anyJustPressed([SPACE, Z, TAB])) {
-            switchState();
+        if (canMove) {
+            handleInput(elapsed);
+            if (FlxG.keys.anyJustPressed([SPACE, Z, TAB])) {
+                switchState();
+            }
         }
+        handleAnimation();
 
         var vel:Vector2 = this.get_body().velocity;
 

@@ -57,7 +57,7 @@ class Hud extends FlxGroup {
 
         if ((end.x > camera.scroll.x + ARROW_GRACE && end.x < camera.scroll.x + camera.width - ARROW_GRACE &&
             end.y > camera.scroll.y + ARROW_GRACE && end.y < camera.scroll.y + camera.height - ARROW_GRACE) ||
-            scene.result != null) {
+            scene.result != null || !scene.player.canMove) {
             arrow.visible = false;
         } else {
             var arrowDistance = endDistance / 20;
