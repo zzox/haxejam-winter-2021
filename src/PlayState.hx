@@ -28,7 +28,7 @@ enum Results {
 class PlayState extends FlxState {
     static final BELOW_BOUNDS_GRACE = 80;
 
-    var result:Results;
+    public var result:Results;
     public var player:Player;
     var terrain:FlxGroup;
     public var end:FlxSprite;
@@ -47,6 +47,10 @@ class PlayState extends FlxState {
             gravity_y: 600
         });
         FlxG.worldBounds.set(0, 0, map.fullWidth, map.fullHeight);
+
+        final bg = new FlxSprite(0, 0, AssetPaths.background_2__png);
+        bg.scrollFactor.set(0.05, 0);
+        add(bg);
 
         terrain = new FlxGroup();
         add(terrain);
@@ -99,7 +103,10 @@ class PlayState extends FlxState {
         final endPos = cast(map.getLayer('end'), TiledObjectLayer).objects[0];
         end = new FlxSprite(endPos.x, endPos.y);
         end.loadGraphic(AssetPaths.end_ring__png, true, 16, 64);
-        end.animation.add('spin', [0, 1, 2, 3], 12);
+        end.offset.set(0, 8);
+        end.setSize(16, 48);
+        end.animation.add('spin', [0, 1, 2, 3], 24);
+        end.animation.add('spin-fast', [0, 1, 2, 3], 48);
         end.animation.play('spin');
     }
 
@@ -172,6 +179,7 @@ class PlayState extends FlxState {
         // transition
 
         trace('won!');
+        end.animation.play('spin-fast');
 
         result = Win;
         FlxG.camera.follow(null);
