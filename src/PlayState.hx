@@ -2,6 +2,7 @@ import display.Hud;
 import echo.Body;
 import echo.data.Data.CollisionData;
 import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObject;
@@ -25,9 +26,12 @@ enum Results {
 }
 
 class PlayState extends FlxState {
+    static final BELOW_BOUNDS_GRACE = 80;
+
     var result:Results;
     public var player:Player;
     var terrain:FlxGroup;
+    var end:FlxSprite;
 
     override public function create() {
         super.create();
@@ -42,6 +46,7 @@ class PlayState extends FlxState {
             height: map.fullHeight,
             gravity_y: 600
         });
+        FlxG.worldBounds.set(0, 0, map.fullWidth, map.fullHeight);
 
         terrain = new FlxGroup();
         add(terrain);
@@ -49,6 +54,9 @@ class PlayState extends FlxState {
         createTriangles(map, SouthWest, terrain);
         createTriangles(map, SouthEast, terrain);
         createSquares(map, terrain);
+        createEnd(map);
+        // TODO: have anim in two parts
+        add(end);
 
         add(createTileLayer(map, 'tiles'));
 
@@ -68,8 +76,12 @@ class PlayState extends FlxState {
         super.update(elapsed);
 
         final world = FlxEcho.instance.world;
-        if (player.x > world.width || player.x < -16 || player.y > world.height) {
+        if (player.x > world.width || player.x < -16 || player.y > world.height + BELOW_BOUNDS_GRACE) {
             lostLevel();
+        }
+
+        if (FlxG.overlap(player, end)) {
+            winLevel();
         }
     }
 
@@ -77,8 +89,24 @@ class PlayState extends FlxState {
         player.listen(terrain, { enter: (_:Body, _:Body, d:Array<CollisionData>) -> {
             if (player.state == Glide) {
                 lostLevel();
+            } else {
+                trace(d[0].normal);
             }
         }});
+    }
+
+    function createEnd (map:TiledMap) {
+        final endPos = cast(map.getLayer('end'), TiledObjectLayer).objects[0];
+        end = new FlxSprite(endPos.x, endPos.y);
+        end.makeGraphic(16, 64, 0xffff0000);
+        end.add_body({
+            mass: 0,
+            shape: {
+                type: RECT,
+                height: 64,
+                width: 16
+            }
+        });
     }
 
     function createTriangles (map:TiledMap, dir:TriangleDir, terrain:FlxGroup) {
@@ -130,19 +158,28 @@ class PlayState extends FlxState {
             return;
         }
 
-        result = Lose;
-
         // show lose prompt
         // transition
 
+        result = Lose;
         FlxG.camera.follow(null);
-
         player.visible = false;
-
         new FlxTimer().start(1, (_:FlxTimer) -> {
             FlxG.switchState(new PlayState());
         });
     }
 
-    function winLevel () {}
+    function winLevel () {
+        if (result != null) {
+            return;
+        }
+
+        // show win prompt
+        // transition
+
+        trace('won!');
+
+        result = Win;
+        FlxG.camera.follow(null);
+    }
 }
