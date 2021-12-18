@@ -24,7 +24,7 @@ class PreState extends FlxState {
         var fontAngelCode = FlxBitmapFont.fromAngelCode(AssetPaths.miniset__png, XMLData);
 
         var text = new FlxBitmapText(fontAngelCode);
-        text.text = 'Press SPACE or Z to start';
+        text.text = 'Click to focus window';
         text.letterSpacing = -1;
         text.setPosition((FlxG.width - text.width) / 2, (FlxG.height - text.height) / 2);
 
@@ -32,7 +32,7 @@ class PreState extends FlxState {
     }
     
     override public function update (elapsed:Float) {
-        if (FlxG.keys.anyJustPressed([SPACE, Z])) {
+        if (FlxG.keys.justPressed.SPACE || (FlxG.mouse != null && FlxG.mouse.justPressed)) {
             startGame();
         }
     }
