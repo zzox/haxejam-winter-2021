@@ -9,6 +9,8 @@ import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectLayer;
 import flixel.addons.editors.tiled.TiledTileLayer;
+import flixel.effects.particles.FlxEmitter;
+import flixel.effects.particles.FlxParticle;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
 import flixel.tile.FlxTilemap;
@@ -36,6 +38,10 @@ class PlayState extends FlxState {
     var terrain:FlxGroup;
     public var end:FlxSprite;
 
+    var flyEmitter:FlxEmitter;
+    var deathEmitter:FlxEmitter;
+    var winEmitter:FlxEmitter;
+
     override public function create() {
         super.create();
 
@@ -46,14 +52,15 @@ class PlayState extends FlxState {
         var map = new TiledMap(level.path);
 
         FlxEcho.init({
-            width: map.fullWidth,	// Make the size of your Echo world equal the size of your play field
+            width: map.fullWidth,
             height: map.fullHeight,
             gravity_y: 600
         });
         FlxG.worldBounds.set(0, 0, map.fullWidth, map.fullHeight);
 
-        final bg = new FlxSprite(0, 0, AssetPaths.background_2__png);
-        bg.scrollFactor.set(0.05, 0);
+        // each level moves bg left
+        final bg = new FlxSprite(-20 * Game.state.level, 0, AssetPaths.background_2__png);
+        bg.scrollFactor.set(0, 0);
         add(bg);
 
         terrain = new FlxGroup();
@@ -68,8 +75,17 @@ class PlayState extends FlxState {
 
         add(createTileLayer(map, 'tiles'));
 
+        flyEmitter = createEmitter(0xff8595a1, 16, 'disolve', 'fly');
+        deathEmitter = createEmitter(0xff757161, 24, 'dissolve', 'death');
+        winEmitter = createEmitter(0xffdad45e, 32, 'shine', 'win');
+        winEmitter.setPosition(end.x + end.width * 0.5, end.y + end.height * 0.5);
+        add(flyEmitter);
+        add(winEmitter);
+
         player = new Player(16, 4, this);
         add(player);
+
+        add(deathEmitter);
 
         collisionListen();
 
@@ -90,18 +106,25 @@ class PlayState extends FlxState {
 
         final world = FlxEcho.instance.world;
         if (player.x > world.width || player.x < -16 || player.y > world.height + BELOW_BOUNDS_GRACE) {
-            lostLevel();
+            lostLevel(false);
         }
 
         if (FlxG.overlap(player, end)) {
             winLevel();
+        }
+
+        flyEmitter.setPosition(player.getMidpoint().x, player.getMidpoint().y);
+        if (player.canMove && player.state == Glide) {
+            flyEmitter.emitting = true;
+        } else {
+            flyEmitter.emitting = false;
         }
     }
 
     public function collisionListen () {
         player.listen(terrain, { enter: (playerBody:Body, _:Body, d:Array<CollisionData>) -> {
             if (player.state == Glide) {
-                lostLevel();
+                lostLevel(true);
             } else {
                 // play sound
                 trace(Math.abs(player.xVel - playerBody.velocity.x) + Math.abs(player.yVel - playerBody.velocity.y));
@@ -164,7 +187,7 @@ class PlayState extends FlxState {
         return null;
     }
 
-    function lostLevel () {
+    function lostLevel (fromCollision:Bool) {
         if (result != null) {
             return;
         }
@@ -178,6 +201,11 @@ class PlayState extends FlxState {
         new FlxTimer().start(1, (_:FlxTimer) -> {
             FlxG.switchState(new PlayState());
         });
+
+        if (fromCollision) {
+            deathEmitter.start(true, 1, 0);
+            deathEmitter.setPosition(player.getMidpoint().x, player.getMidpoint().y);
+        }
     }
 
     function winLevel () {
@@ -194,6 +222,7 @@ class PlayState extends FlxState {
         result = Win;
         FlxG.camera.follow(null);
         Game.state.seenLevel = false;
+        winEmitter.start(true, 1, 0);
     }
 
     function showLevel () {
@@ -204,7 +233,7 @@ class PlayState extends FlxState {
                     "scroll.x": end.x - (camera.width * 0.5),
                     "scroll.y": end.y - (camera.height * 0.5),
                 },
-                3,
+                2,
                 { ease: FlxEase.cubeInOut }
             ).then(FlxTween.tween(
                 camera,
@@ -227,5 +256,38 @@ class PlayState extends FlxState {
         FlxG.camera.follow(player);
         player.canMove = true;
         Game.state.seenLevel = true;
+    }
+
+    function createEmitter (color:Int, size:Int, anim:String, type:String):FlxEmitter {
+        final emitter = new FlxEmitter();
+        emitter.lifespan.set(0.5, 1);
+
+        switch (type) {
+            case 'death':
+                emitter.velocity.set(-60, -60, 60, 60);
+                emitter.drag.set(120, 120, 120, 120);
+            case 'win':
+                emitter.velocity.set(-60, -240, 60, 240);
+                emitter.drag.set(60, 60, 60, 60);
+            case 'fly':
+                emitter.velocity.set(-5, -5, 5, 5);
+            case _: null;
+        }
+        emitter.launchMode = FlxEmitterMode.SQUARE;
+        for (_ in 0...size) {
+            var p = new FlxParticle();
+            p.loadGraphic(AssetPaths.particles__png, true, 5, 5);
+            p.animation.add('disolve', [0, 1, 2, 3, 3, 4, 5, 6], 30, false);
+            p.animation.add('shine', [7, 8], 18);
+            p.animation.play(anim);
+            p.exists = false;
+            emitter.add(p);
+        }
+        emitter.color.set(cast color);
+        if (type == 'fly') {
+            emitter.start(false, 0.125, 1);
+        }
+        emitter.emitting = false;
+        return emitter;
     }
 }
