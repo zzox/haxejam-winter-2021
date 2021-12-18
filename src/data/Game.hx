@@ -1,11 +1,10 @@
 package data;
 
-
-
 class Game {
-    public static final levels = [{
-        path: AssetPaths.map_1__tmx
-    }];
+    public static final levels = [
+        { path: AssetPaths.small_jump__tmx },
+        { path: AssetPaths.map_1__tmx }
+    ];
 
     public static final state:State = new State();
 

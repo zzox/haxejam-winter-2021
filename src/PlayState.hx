@@ -1,4 +1,5 @@
 import data.Game;
+import display.Curtain;
 import display.Hud;
 import echo.Body;
 import echo.data.Data.CollisionData;
@@ -41,6 +42,7 @@ class PlayState extends FlxState {
     var flyEmitter:FlxEmitter;
     var deathEmitter:FlxEmitter;
     var winEmitter:FlxEmitter;
+    var curtain:Curtain;
 
     override public function create() {
         super.create();
@@ -75,8 +77,8 @@ class PlayState extends FlxState {
 
         add(createTileLayer(map, 'tiles'));
 
-        flyEmitter = createEmitter(0xff8595a1, 16, 'disolve', 'fly');
-        deathEmitter = createEmitter(0xff757161, 24, 'dissolve', 'death');
+        flyEmitter = createEmitter(0xff8595a1, 16, 'disolve-2', 'fly');
+        deathEmitter = createEmitter(0xff757161, 32, 'disolve', 'death');
         winEmitter = createEmitter(0xffdad45e, 32, 'shine', 'win');
         winEmitter.setPosition(end.x + end.width * 0.5, end.y + end.height * 0.5);
         add(flyEmitter);
@@ -92,13 +94,17 @@ class PlayState extends FlxState {
         final hud = new Hud(this);
         add(hud);
 
-        FlxG.camera.setScrollBounds(0, map.fullWidth, 0, map.fullHeight);
+        curtain = new Curtain();
+        curtain.open(() -> {
+            if (Game.state.seenLevel) { 
+                seenLevel();
+            } else {
+                showLevel(Math.sqrt(Math.pow(player.x - end.x, 2) + Math.pow(player.x - end.x, 2)));
+            }
+        });
+        add(curtain);
 
-        if (Game.state.seenLevel) { 
-            seenLevel();
-        } else {
-            showLevel();
-        }
+        FlxG.camera.setScrollBounds(0, map.fullWidth, 0, map.fullHeight);
     }
 
     override public function update(elapsed:Float) {
@@ -127,7 +133,7 @@ class PlayState extends FlxState {
                 lostLevel(true);
             } else {
                 // play sound
-                trace(Math.abs(player.xVel - playerBody.velocity.x) + Math.abs(player.yVel - playerBody.velocity.y));
+                // trace(Math.abs(player.xVel - playerBody.velocity.x) + Math.abs(player.yVel - playerBody.velocity.y));
             }
         }});
     }
@@ -225,15 +231,16 @@ class PlayState extends FlxState {
         winEmitter.start(true, 1, 0);
     }
 
-    function showLevel () {
-        new FlxTimer().start(1, (_:FlxTimer) -> {
+    function showLevel (dist:Float) {
+        trace(dist);
+        new FlxTimer().start(0.5, (_:FlxTimer) -> {
             FlxTween.tween(
                 camera,
                 {
                     "scroll.x": end.x - (camera.width * 0.5),
                     "scroll.y": end.y - (camera.height * 0.5),
                 },
-                2,
+                0.5 + dist / 2500,
                 { ease: FlxEase.cubeInOut }
             ).then(FlxTween.tween(
                 camera,
@@ -241,7 +248,7 @@ class PlayState extends FlxState {
                     "scroll.x": 0,
                     "scroll.y": 0,
                 },
-                3,
+                0.5 + dist / 2500,
                 {
                     ease: FlxEase.cubeInOut,
                     onComplete: (_:FlxTween) -> {
@@ -265,7 +272,7 @@ class PlayState extends FlxState {
         switch (type) {
             case 'death':
                 emitter.velocity.set(-60, -60, 60, 60);
-                emitter.drag.set(120, 120, 120, 120);
+                emitter.drag.set(90, 90, 90, 90);
             case 'win':
                 emitter.velocity.set(-60, -240, 60, 240);
                 emitter.drag.set(60, 60, 60, 60);
@@ -277,7 +284,8 @@ class PlayState extends FlxState {
         for (_ in 0...size) {
             var p = new FlxParticle();
             p.loadGraphic(AssetPaths.particles__png, true, 5, 5);
-            p.animation.add('disolve', [0, 1, 2, 3, 3, 4, 5, 6], 30, false);
+            p.animation.add('disolve', [0, 1, 2, 3, 3, 4, 5, 6], 12, false);
+            p.animation.add('disolve-2', [1, 2, 3, 4, 5, 6], 30, false);
             p.animation.add('shine', [7, 8], 18);
             p.animation.play(anim);
             p.exists = false;
