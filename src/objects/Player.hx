@@ -4,6 +4,7 @@ import echo.Body;
 import echo.data.Options.BodyOptions;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.system.FlxSound;
 
 using echo.FlxEcho;
 using echo.data.Types;
@@ -39,6 +40,9 @@ class Player extends FlxSprite {
         down: 0
     };
 
+    var glideToBallSound:FlxSound;
+    var ballToGlideSound:FlxSound;
+
     public function new (x:Int, y:Int, scene:PlayState) {
         super(x, y);
         this.scene = scene;
@@ -54,6 +58,9 @@ class Player extends FlxSprite {
         animation.add('glide', [2, 3], 12);
         animation.add('glide-still', [4]);
         animation.play('ball-still');
+
+        glideToBallSound = FlxG.sound.load(AssetPaths.glide_to_ball__mp3, 1);
+        ballToGlideSound = FlxG.sound.load(AssetPaths.ball_to_glide__mp3, 1);
     }
 
     override public function update (elapsed:Float) {
@@ -97,6 +104,7 @@ class Player extends FlxSprite {
             animation.play('glide');
             flipX = false;
             state = Glide;
+            ballToGlideSound.play(true);
         } else {
             this.add_body({
                 velocity_x: body.velocity.x,
@@ -106,6 +114,7 @@ class Player extends FlxSprite {
                 gravity_scale: 1
             });
             state = Ball;
+            glideToBallSound.play(true);
         }
 
         scene.collisionListen();

@@ -1,4 +1,5 @@
 import data.Game;
+import data.Utils;
 import display.Curtain;
 import display.Hud;
 import echo.Body;
@@ -13,6 +14,7 @@ import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.effects.particles.FlxEmitter;
 import flixel.effects.particles.FlxParticle;
 import flixel.group.FlxGroup;
+import flixel.system.FlxSound;
 import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
@@ -43,6 +45,10 @@ class PlayState extends FlxState {
     var deathEmitter:FlxEmitter;
     var winEmitter:FlxEmitter;
     var curtain:Curtain;
+
+    var dingSound:FlxSound;
+    var winSound:FlxSound;
+    var deathSound:FlxSound;
 
     override public function create() {
         super.create();
@@ -108,6 +114,13 @@ class PlayState extends FlxState {
         add(curtain);
 
         FlxG.camera.setScrollBounds(0, map.fullWidth, 0, map.fullHeight);
+
+        FlxG.sound.play(AssetPaths.background__mp3, 0.5, true);
+        FlxG.sound.play(AssetPaths.win__mp3, 0.5, true);
+
+        dingSound = FlxG.sound.load(AssetPaths.ding__mp3, 1);
+        winSound = FlxG.sound.load(AssetPaths.win_hit__mp3, 1);
+        deathSound = FlxG.sound.load(AssetPaths.death__mp3, 1);
     }
 
     override public function update(elapsed:Float) {
@@ -136,7 +149,10 @@ class PlayState extends FlxState {
                 lostLevel('collision');
             } else {
                 // play sound
-                // trace(Math.abs(player.xVel - playerBody.velocity.x) + Math.abs(player.yVel - playerBody.velocity.y));
+                trace(Math.abs(player.xVel - playerBody.velocity.x) + Math.abs(player.yVel - playerBody.velocity.y));
+                final bounceVel = Math.abs(player.xVel - playerBody.velocity.x) + Math.abs(player.yVel - playerBody.velocity.y);
+                dingSound.volume = clamp(0, 1, bounceVel / 1000);
+                dingSound.play(true);
             }
         }});
     }
@@ -211,10 +227,12 @@ class PlayState extends FlxState {
 
         if (type == 'collision') {
             showPrompt('fail');
+            deathSound.play();
             deathEmitter.start(true, 1, 0);
             deathEmitter.setPosition(player.getMidpoint().x, player.getMidpoint().y);
         } else if (type == 'out') {
             showPrompt('out');
+            deathSound.play();
         }
     }
 
@@ -232,6 +250,7 @@ class PlayState extends FlxState {
         winEmitter.start(true, 1, 0);
 
         showPrompt('win');
+        winSound.play();
 
         new FlxTimer().start(1, (_:FlxTimer) -> {
             FlxG.switchState(new PlayState());
