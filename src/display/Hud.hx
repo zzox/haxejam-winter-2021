@@ -1,5 +1,6 @@
 package display;
 
+import data.Utils;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxBitmapFont;
@@ -60,9 +61,7 @@ class Hud extends FlxGroup {
             scene.result != null || !scene.player.canMove) {
             arrow.visible = false;
         } else {
-            var arrowDistance = endDistance / 20;
-            if (arrowDistance < 20) arrowDistance = 20;
-            if (arrowDistance > 40) arrowDistance = 40;
+            final arrowDistance = clamp(20, 40, endDistance / 20);
 
             arrow.setPosition(
                 player.x + arrowDistance * Math.cos(angle * Math.PI / 180),
