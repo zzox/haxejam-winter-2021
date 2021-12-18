@@ -11,6 +11,7 @@ import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectLayer;
 import flixel.addons.editors.tiled.TiledTileLayer;
+import flixel.addons.plugin.taskManager.FlxTask;
 import flixel.effects.particles.FlxEmitter;
 import flixel.effects.particles.FlxParticle;
 import flixel.group.FlxGroup;
@@ -115,8 +116,9 @@ class PlayState extends FlxState {
 
         FlxG.camera.setScrollBounds(0, map.fullWidth, 0, map.fullHeight);
 
-        FlxG.sound.play(AssetPaths.background__mp3, 0.5, true);
-        FlxG.sound.play(AssetPaths.win__mp3, 0.5, true);
+        // TODO: put in menu state
+        FlxG.sound.playMusic(AssetPaths.background__mp3, 1, true);
+        FlxG.sound.playMusic(AssetPaths.win__mp3, 0.5, true);
 
         dingSound = FlxG.sound.load(AssetPaths.ding__mp3, 1);
         winSound = FlxG.sound.load(AssetPaths.win_hit__mp3, 1);
@@ -135,6 +137,10 @@ class PlayState extends FlxState {
             winLevel();
         }
 
+        if (FlxG.keys.anyJustPressed([ESCAPE, R])) {
+            lostLevel('restart');
+        }
+
         flyEmitter.setPosition(player.getMidpoint().x, player.getMidpoint().y);
         if (player.canMove && player.state == Glide) {
             flyEmitter.emitting = true;
@@ -148,8 +154,6 @@ class PlayState extends FlxState {
             if (player.state == Glide) {
                 lostLevel('collision');
             } else {
-                // play sound
-                trace(Math.abs(player.xVel - playerBody.velocity.x) + Math.abs(player.yVel - playerBody.velocity.y));
                 final bounceVel = Math.abs(player.xVel - playerBody.velocity.x) + Math.abs(player.yVel - playerBody.velocity.y);
                 dingSound.volume = clamp(0, 1, bounceVel / 1000);
                 dingSound.play(true);
@@ -253,6 +257,10 @@ class PlayState extends FlxState {
         winSound.play();
 
         new FlxTimer().start(1, (_:FlxTimer) -> {
+            curtain.close(() -> {});
+        });
+
+        new FlxTimer().start(2.5, (_:FlxTimer) -> {
             FlxG.switchState(new PlayState());
         });
     }
@@ -265,8 +273,6 @@ class PlayState extends FlxState {
             case _: null;
         }
 
-        trace(path);
-
         final promptSprite = new FlxSprite(0, 0, path);
         promptSprite.scale.set(4, 4);
         promptSprite.setGraphicSize();
@@ -277,13 +283,12 @@ class PlayState extends FlxState {
         promptSprite.scrollFactor.set(0, 0);
         add(promptSprite);
 
-        FlxTween.tween(promptSprite, { x: FlxG.camera.width * 0.5 - promptSprite.width * 0.5  }, 0.25).then(
+        FlxTween.tween(promptSprite, { x: FlxG.camera.width * 0.5 - promptSprite.width * 0.5 }, 0.25).then(
             FlxTween.tween(promptSprite, { x: FlxG.camera.width }, 0.25, { startDelay: 1 })
         );
     }
 
     function showLevel (dist:Float) {
-        trace(dist);
         new FlxTimer().start(0.5, (_:FlxTimer) -> {
             FlxTween.tween(
                 camera,
