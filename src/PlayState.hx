@@ -53,11 +53,14 @@ class PlayState extends FlxState {
         final level = Game.levels[Game.state.level];
         var map = new TiledMap(level.path);
 
-        FlxEcho.init({
-            width: map.fullWidth,
-            height: map.fullHeight,
-            gravity_y: 600
-        });
+        FlxEcho.init(
+            {
+                width: map.fullWidth,
+                height: map.fullHeight,
+                gravity_y: 600
+            },
+            true
+        );
         FlxG.worldBounds.set(0, 0, map.fullWidth, map.fullHeight);
 
         // each level moves bg left
@@ -112,7 +115,7 @@ class PlayState extends FlxState {
 
         final world = FlxEcho.instance.world;
         if (player.x > world.width || player.x < -16 || player.y > world.height + BELOW_BOUNDS_GRACE) {
-            lostLevel(false);
+            lostLevel('out');
         }
 
         if (FlxG.overlap(player, end)) {
@@ -130,7 +133,7 @@ class PlayState extends FlxState {
     public function collisionListen () {
         player.listen(terrain, { enter: (playerBody:Body, _:Body, d:Array<CollisionData>) -> {
             if (player.state == Glide) {
-                lostLevel(true);
+                lostLevel('collision');
             } else {
                 // play sound
                 // trace(Math.abs(player.xVel - playerBody.velocity.x) + Math.abs(player.yVel - playerBody.velocity.y));
@@ -144,7 +147,7 @@ class PlayState extends FlxState {
         end.loadGraphic(AssetPaths.end_ring__png, true, 16, 64);
         end.offset.set(0, 8);
         end.setSize(16, 48);
-        end.animation.add('spin', [0, 1, 2, 3], 24);
+        end.animation.add('spin', [0, 1, 2, 3], 12);
         end.animation.add('spin-fast', [0, 1, 2, 3], 48);
         end.animation.play('spin');
     }
@@ -193,24 +196,25 @@ class PlayState extends FlxState {
         return null;
     }
 
-    function lostLevel (fromCollision:Bool) {
+    function lostLevel (type) {
         if (result != null) {
             return;
         }
 
-        // show lose prompt
-        // transition
-
         result = Lose;
         FlxG.camera.follow(null);
         player.canMove = false;
+        curtain.close(() -> {});
         new FlxTimer().start(1, (_:FlxTimer) -> {
             FlxG.switchState(new PlayState());
         });
 
-        if (fromCollision) {
+        if (type == 'collision') {
+            showPrompt('fail');
             deathEmitter.start(true, 1, 0);
             deathEmitter.setPosition(player.getMidpoint().x, player.getMidpoint().y);
+        } else if (type == 'out') {
+            showPrompt('out');
         }
     }
 
@@ -219,16 +223,44 @@ class PlayState extends FlxState {
             return;
         }
 
-        // show win prompt
-        // transition
-
-        trace('won!');
         end.animation.play('spin-fast');
 
         result = Win;
         FlxG.camera.follow(null);
         Game.state.seenLevel = false;
+        Game.state.level++;
         winEmitter.start(true, 1, 0);
+
+        showPrompt('win');
+
+        new FlxTimer().start(1, (_:FlxTimer) -> {
+            FlxG.switchState(new PlayState());
+        });
+    }
+
+    function showPrompt (name:String) {
+        var path = switch (name) {
+            case 'out': AssetPaths.out_prompt__png;
+            case 'fail': AssetPaths.fail_prompt__png;
+            case 'win': AssetPaths.win_prompt__png;
+            case _: null;
+        }
+
+        trace(path);
+
+        final promptSprite = new FlxSprite(0, 0, path);
+        promptSprite.scale.set(4, 4);
+        promptSprite.setGraphicSize();
+        promptSprite.setPosition(
+            -promptSprite.width,
+            FlxG.camera.height * 0.5 - promptSprite.height * 0.5
+        );
+        promptSprite.scrollFactor.set(0, 0);
+        add(promptSprite);
+
+        FlxTween.tween(promptSprite, { x: FlxG.camera.width * 0.5 - promptSprite.width * 0.5  }, 0.25).then(
+            FlxTween.tween(promptSprite, { x: FlxG.camera.width }, 0.25, { startDelay: 1 })
+        );
     }
 
     function showLevel (dist:Float) {

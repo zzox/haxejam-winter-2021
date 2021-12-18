@@ -10,7 +10,8 @@ import flixel.util.FlxTimer;
 import haxe.Constraints.Function;
 
 class Curtain extends FlxGroup {
-    static inline final CIRCLE_DIST = 32;
+    static inline final CIRCLE_DIST = 64;
+    static inline final PADDING = 16;
     static inline final MAX_TIME = 0.25;
 
     public function new () {
@@ -18,7 +19,7 @@ class Curtain extends FlxGroup {
 
         for (x in 0...(Math.ceil(FlxG.width / CIRCLE_DIST))) {
             for (y in 0...(Math.ceil(FlxG.height / CIRCLE_DIST))) {
-                var circle = new FlxSprite(x * CIRCLE_DIST, y * CIRCLE_DIST);
+                var circle = new FlxSprite(x * CIRCLE_DIST - PADDING, y * CIRCLE_DIST - PADDING);
                 circle.makeGraphic(8, 8, 0xff060608);
                 circle.loadGraphic(AssetPaths.big_circle__png);
                 circle.scrollFactor.set(0, 0);
@@ -48,6 +49,7 @@ class Curtain extends FlxGroup {
         forEach((circle:FlxBasic) -> {
             new FlxTimer().start(Math.random() * MAX_TIME,
                 (_:FlxTimer) -> {
+                    circle.visible = true;
                     FlxTween.tween(circle, { "scale.x": 1, "scale.y": 1 }, MAX_TIME, {
                         ease: FlxEase.sineIn,
                         // onComplete: (_:FlxTween) -> {
