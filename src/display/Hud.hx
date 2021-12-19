@@ -11,19 +11,28 @@ class Hud extends FlxGroup {
     static inline final ARROW_GRACE = 16;
     var scene:PlayState;
     var speed:FlxBitmapText;
+    var distanceText:FlxBitmapText;
     var arrow:FlxSprite;
     static final arrowAngles = ['left', 'up-left', 'up', 'up', 'up-right', 'right', 'down-right', 'down', 'down', 'down-left', 'left'];
 
     public function new (scene:PlayState) {
         super();
 
-        speed = generateText();
-        speed.color = 0xffffffff;
-        speed.text = '0 pps';
-        speed.letterSpacing = -1;
-        speed.scrollFactor.set(0, 0);
-        speed.setPosition(4, 4);
-        add(speed);
+        // speed = generateText();
+        // speed.color = 0xffffffff;
+        // speed.text = '0 pps';
+        // speed.letterSpacing = -1;
+        // speed.scrollFactor.set(0, 0);
+        // speed.setPosition(4, 4);
+        // add(speed);
+
+        distanceText = generateText();
+        distanceText.color = 0xffdeeed6;
+        distanceText.text = '';
+        distanceText.letterSpacing = -1;
+        distanceText.scrollFactor.set(0, 0);
+        distanceText.setPosition(4, 4);
+        add(distanceText);
 
         arrow = new Arrow();
         add(arrow);
@@ -34,10 +43,19 @@ class Hud extends FlxGroup {
     override public function update(elapsed:Float) {
         super.update(elapsed);
 
-        final speedText = Math.floor(scene.player.compVel);
-        final xVel = Math.round(scene.player.xVel);
-        final yVel = Math.round(scene.player.yVel);
-        speed.text = '$speedText pps x:$xVel | y:$yVel';
+        // final speedText = Math.floor(scene.player.compVel);
+        // final xVel = Math.round(scene.player.xVel);
+        // final yVel = Math.round(scene.player.yVel);
+        // speed.text = '$speedText pps x:$xVel | y:$yVel';
+
+        if (scene.result == null) {
+            final distance = Math.floor(Math.sqrt(
+                Math.pow(scene.player.x - scene.end.x, 2) + Math.pow(scene.player.y - scene.end.y, 2)
+            ));
+            distanceText.text = '$distance px';
+        } else {
+            distanceText.text = '';
+        }
 
         adjustDisplayArrow();
     }
@@ -49,7 +67,7 @@ class Hud extends FlxGroup {
 
         final angle:Float = FlxAngle.angleBetween(player, end, true);
         final angleSimplified = Math.floor((angle + 196) / 36);
-        final endDistance = Math.sqrt(Math.pow(player.x - end.x, 2) + Math.pow(player.x - end.x, 2));
+        final endDistance = Math.sqrt(Math.pow(player.x - end.x, 2) + Math.pow(player.y - end.y, 2));
 
         if ((end.x > camera.scroll.x + ARROW_GRACE && end.x < camera.scroll.x + camera.width - ARROW_GRACE &&
             end.y > camera.scroll.y + ARROW_GRACE && end.y < camera.scroll.y + camera.height - ARROW_GRACE) ||

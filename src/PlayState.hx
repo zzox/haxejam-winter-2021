@@ -120,7 +120,7 @@ class PlayState extends FlxState {
             if (Game.state.seenLevel) { 
                 seenLevel();
             } else {
-                showLevel(Math.sqrt(Math.pow(player.x - end.x, 2) + Math.pow(player.x - end.x, 2)), Game.state.level + 1, level.name);
+                showLevel(Math.sqrt(Math.pow(player.x - end.x, 2) + Math.pow(player.y - end.y, 2)), Game.state.level + 1, level.name);
             }
         });
         add(curtain);
@@ -313,7 +313,7 @@ class PlayState extends FlxState {
         promptSprite.setGraphicSize();
         promptSprite.setPosition(
             -promptSprite.width,
-            FlxG.camera.height * 0.5 - promptSprite.height * 0.5
+            FlxG.camera.height * 0.5 - promptSprite.height
         );
         promptSprite.scrollFactor.set(0, 0);
         add(promptSprite);
@@ -355,7 +355,7 @@ class PlayState extends FlxState {
         final levelText = makeText('Level $levelNum: $levelName');
         levelText.scale.set(2, 2);
         // weird math because of scale
-        levelText.setPosition(FlxG.camera.width * 0.5, 128);
+        levelText.setPosition(FlxG.camera.width * 0.5 - levelText.width * 0.5, 108);
         new FlxTimer().start(3, (_:FlxTimer) -> {
             levelText.visible = false;
         });
