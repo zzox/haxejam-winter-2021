@@ -38,6 +38,6 @@ class PreState extends FlxState {
     }
 
     function startGame () {
-        FlxG.switchState(new PlayState());
+        FlxG.switchState(new MenuState());
     }
 }
