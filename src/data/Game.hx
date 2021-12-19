@@ -5,7 +5,7 @@ class Game {
         { path: AssetPaths.small_jump__tmx, name: 'Jump one' },
         { path: AssetPaths.small_jump_with_spikes__tmx, name: 'Up and Over' },
         { path: AssetPaths.jump_with_bounces__tmx, name: 'Bouncing OK' },
-        // fastball
+        { path: AssetPaths.fastball__tmx, name: 'Fastball' },
         { path: AssetPaths.plink_on_through__tmx, name: 'Plink on Through' },
         { path: AssetPaths.longshot__tmx, name: 'Longshot' },
         { path: AssetPaths.tricky__tmx, name: 'Tricky' },
