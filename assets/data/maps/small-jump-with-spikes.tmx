@@ -42,7 +42,7 @@
  </objectgroup>
  <layer id="5" name="tiles" width="144" height="32">
   <data encoding="base64" compression="zlib">
-   eJzt2VsKwzAMBED3RVJCaO9/2tpXiLOhiBnQryCw2FLcGgAAAAAAAAAA/IdnuKjr2+vW6x6qR6/1sq/haiM/r2D/pclPZSM/e7D/p8lPZenzR35qG/l5B/tvTX4qc/4wIz3/mJ9rs38xw/7FjHR+zM+1pfcv91dt9i9muL+Y4f/hMck357Pfr5PS+al6fyXv/DMt4f7m52N+0IwDow==
+   eJzt2VsKgzAQhtH0hpa+dP+rbdxCxl/KcA7Ma0D4DNGMAQAAAAAAAAAA/+EZHvr6zrnNuYfmMWe/7Gm42tHPK7j+NvTTmX6o0A8VRz/v4Pr66S29/3yGfjqz/1CR7sf+05t+qNAPFfqhwvcXFfqhQj9rknfOZ99fJ/n/syb5zp1pC6/v/LzmB2gAA2s=
   </data>
  </layer>
 </map>

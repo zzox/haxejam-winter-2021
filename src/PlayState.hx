@@ -318,6 +318,7 @@ class PlayState extends FlxState {
     }
 
     function showLevel (dist:Float) {
+        final showDistance = clamp(1.0, 4.0, 0.5 + dist / 2000);
         new FlxTimer().start(0.5, (_:FlxTimer) -> {
             // FlxTween.tween(camera, { zoom: 0.5 }, 0.5).then(FlxTween.tween(camera, { zoom: 1 }, 0.5, { startDelay: dist / 2500 * 2 }));
             FlxTween.tween(
@@ -326,7 +327,7 @@ class PlayState extends FlxState {
                     "scroll.x": end.x - (camera.width * 0.5),
                     "scroll.y": end.y - (camera.height * 0.5),
                 },
-                0.5 + dist / 2500,
+                showDistance,
                 { ease: FlxEase.cubeInOut }
             ).then(FlxTween.tween(
                 camera,
@@ -334,7 +335,7 @@ class PlayState extends FlxState {
                     "scroll.x": 0,
                     "scroll.y": 0,
                 },
-                0.5 + dist / 2500,
+                showDistance,
                 {
                     ease: FlxEase.cubeInOut,
                     onComplete: (_:FlxTween) -> {

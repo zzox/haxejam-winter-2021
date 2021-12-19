@@ -6,8 +6,8 @@ import flixel.group.FlxGroup;
 class CloudSet extends FlxGroup {
     static inline final SMALL_CLOUDS = 128;
     static inline final BIG_CLOUDS = 64;
-    static inline final SMALL_CLOUD_MAX = 2500;
-    static inline final BIG_CLOUD_MAX = 5000;
+    static inline final SMALL_CLOUD_MAX = 5000;
+    static inline final BIG_CLOUD_MAX = 10000;
 
     var smallClouds:FlxTypedGroup<Cloud>;
     var bigClouds:FlxTypedGroup<Cloud>;
@@ -18,13 +18,13 @@ class CloudSet extends FlxGroup {
         smallClouds = new FlxTypedGroup<Cloud>();
         for (_ in 0...SMALL_CLOUDS) {
             final cloud = new Cloud(
-                Math.random() * BIG_CLOUD_MAX,
+                Math.random() * SMALL_CLOUD_MAX,
                 Math.random() * 125 + 62,
                 AssetPaths.small_clouds__png,
                 32,
                 16
             );
-            cloud.velocity.set(Math.random() * -20 - 20);
+            cloud.velocity.set(Math.random() * -10 - 10);
             cloud.scrollFactor.set(0.25, 0.25);
             smallClouds.add(cloud);
         }
@@ -38,7 +38,7 @@ class CloudSet extends FlxGroup {
                 64,
                 32
             );
-            cloud.velocity.set(Math.random() * -10 - 10);
+            cloud.velocity.set(Math.random() * -20 - 20);
             cloud.scrollFactor.set(0.50, 0.50);
             bigClouds.add(cloud);
         }

@@ -56,7 +56,7 @@
  </objectgroup>
  <layer id="5" name="tiles" width="192" height="64">
   <data encoding="base64" compression="zlib">
-   eJzt2kEKwCAMRUG1SO9/Y3uFLoo2fwayD+Et0xoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUE1/Zvxorm/OQKi5e4GX7t0LUIr+SaZ/kumfZPonmf5Jpn+S6Z9k+ieZ/kmmf5JV6//UfyZ/S2daqPcBOQ==
+   eJzt2kEKg0AUBUFNkJD7X9hsvMHAj3YVuJ9A8xiD29bznT4ADNI/Zfqn7Jg+AAyy/5TZf8rsP2X6p0z/lOmfMu+/lOmfMvcfyuw/ZfafMv1Tpn/K9E+Z/inTP2X6p8z//5TpnzL3H8r0T5n+KXP/p8z+U6Z/ytx/KNM/Ze4/lNl/yvRPmfsPZfafMv1Tpn/K9E+Z91/K7D9l9p8y+0+Z/afM/lNm/ymz/5TZf8rsP2X6p0z/XPbf87rR817wm/XP5W4tfKYPwKPonzL9U6Z/yvRPmf4p0z9l+qdM/5TpnzL9U/a0/v/1e6YV3y2x3gmqigKt
   </data>
  </layer>
 </map>
