@@ -11,10 +11,10 @@ class PreState extends FlxState {
 
         // PROD: remove this vvv
         // requires `-debug` flag
-        FlxG.debugger.visible = true;
-        FlxG.debugger.drawDebug = true;
+        // FlxG.debugger.visible = true;
+        // FlxG.debugger.drawDebug = true;
 
-        FlxG.mouse.visible = false;
+        // FlxG.mouse.visible = false;
 
         camera.pixelPerfectRender = true;
         FlxG.scaleMode = new PixelPerfectScaleMode();
