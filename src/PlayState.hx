@@ -117,8 +117,12 @@ class PlayState extends FlxState {
         FlxG.camera.setScrollBounds(0, map.fullWidth, 0, map.fullHeight);
 
         // TODO: put in menu state
-        FlxG.sound.playMusic(AssetPaths.background__mp3, 1, true);
-        FlxG.sound.playMusic(AssetPaths.win__mp3, 0.5, true);
+        if (FlxG.sound.defaultMusicGroup.sounds.length < 2) {
+            final envSound = FlxG.sound.play(AssetPaths.background__mp3, 1, true, FlxG.sound.defaultMusicGroup, false);
+            final bgSound = FlxG.sound.play(AssetPaths.win__mp3, 0.5, true, FlxG.sound.defaultMusicGroup, false);
+            envSound.persist = true;
+            bgSound.persist = true;
+        }
 
         dingSound = FlxG.sound.load(AssetPaths.ding__mp3, 1);
         winSound = FlxG.sound.load(AssetPaths.win_hit__mp3, 1);
