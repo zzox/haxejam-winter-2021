@@ -3,11 +3,9 @@ package display;
 import data.Utils;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxBitmapFont;
 import flixel.group.FlxGroup;
 import flixel.math.FlxAngle;
 import flixel.text.FlxBitmapText;
-import openfl.Assets;
 
 class Hud extends FlxGroup {
     static inline final ARROW_GRACE = 16;
@@ -18,11 +16,8 @@ class Hud extends FlxGroup {
 
     public function new (scene:PlayState) {
         super();
-        var textBytes = Assets.getText(AssetPaths.miniset__fnt);
-        var XMLData = Xml.parse(textBytes);
-        var fontAngelCode = FlxBitmapFont.fromAngelCode(AssetPaths.miniset__png, XMLData);
 
-        speed = new FlxBitmapText(fontAngelCode);
+        speed = generateText();
         speed.color = 0xffffffff;
         speed.text = '0 pps';
         speed.letterSpacing = -1;

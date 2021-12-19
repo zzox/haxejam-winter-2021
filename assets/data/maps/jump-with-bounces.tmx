@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="256" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="36">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="256" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="44">
  <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="16" columns="4">
   <image source="../../images/tilesets/tiles.png" width="64" height="64"/>
  </tileset>
@@ -24,9 +24,15 @@
   <object id="26" x="0" y="32" width="32" height="512"/>
   <object id="27" x="1120" y="688" width="944" height="16"/>
   <object id="28" x="2480" y="832" width="1264" height="16"/>
+  <object id="37" x="1600" y="0" width="16" height="640"/>
+  <object id="38" x="3104" y="0" width="16" height="784"/>
+  <object id="39" x="3120" y="768" width="624" height="16"/>
+  <object id="41" x="3728" y="0" width="16" height="768"/>
+  <object id="42" x="1536" y="624" width="64" height="16"/>
+  <object id="43" x="1536" y="0" width="16" height="624"/>
  </objectgroup>
  <objectgroup id="6" name="end">
-  <object id="35" x="3856" y="704" width="16" height="64"/>
+  <object id="35" x="3758" y="776" width="16" height="64"/>
  </objectgroup>
  <objectgroup id="4" name="se-triangles">
   <object id="19" x="615" y="468" width="73" height="60"/>
@@ -36,7 +42,7 @@
  </objectgroup>
  <layer id="5" name="tiles" width="256" height="64">
   <data encoding="base64" compression="zlib">
-   eJzt2kFuxCAMBdBpq6qq5v73bQ+QxUhg4j9+T8oeBX8MJI8HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADM9fH/fAY8X1UvAAb7vXsAL3rePQB4Q/IPc33fPYAXyT/sl9L/f+4eALyhlPzr/7BfSv71f9gv5fwv/7Cf/MNcKfl3/of95P9ayn+R/qtkRcr93+n8p6yLq+yrZkupc/mv4V5ltpQ6P53/lH3RKv1/Nvm/NiX/+v9sKXV+uk5T1sVV+v9s8n9tSv71/9lS8u/+r4b8z5ZS5/JfQ/5nS6lz+a9xMv9T/qlK+kfL/v+a/O+XUmvdVM5Rypyc3qemvJdV8t9f5Ryl9Dnf/2ucfK8ptdaN/i//VfT//uTf9/8qJ9fVlFrrRv7lv4r+31/lGp0yJ/b/NZz/+9P/3f9Xkf/+3P/7/l/F+b8//d/+v4rzf3/O//p/Ff2/v8o1+g8VvQVL
+   eJzt28tOw0AQBEAeQggh4P//FiRfLCvikoynd1wl+cAtiafTu87y9ESnt8Pfny2vguN9SGIm5pL/DB/dL+AfZmKuY/7fW14F+p8O+j+D/qfDce7c6x76nw7W/xn0Px3kP4P+p4P9fwb9Twf9nyE5/2ZiruPcudc9ktf/ZmIu+c+Q3P/W/3NZ/2fQ/3SQ/wzJ+df/c3n+n8H6nw7O/2XQ/3Sw/s+g/+ng+X+G5PybibnkP4P1Px3s/zPIPx30fwbrfzp4/pchuf/NxFzynyE5/9b/czn/kyF5/W8m5rL/z5Dc/2ZiLv2fQf7poP8zyD8dPP/LYP9PB+v/DPqfDvo/Q3L/m4m5nP/NkNz/ZmIu/Z9B/9NB/2eQfzro/wzJ6//KmXj+u14WuF6rPoBm8p8huf8r14TJ73tv6rrY738ZknMg/3Nz4fxfhuQcVM5+8r5nb2r+9X+Gq+Y/+X3vTe1F/Z8huQcrZ2KV/E/tRfnPkJwD+Z+bi6+/63t3/fS+nMtK7n/7/7n5J0NyDipnP/l978k/lZJzoP/n7v/JkLwPlv/z87/KuUjnKh/jqvlPft97Z+d/le/Fe1lXbZLvt/2//FfxXGWTfL/l//z8r7Iuupf+3yTfb/mX/yr6f5OcA/v/8+c0eR4eSf9vjuewkq7KM2Hyf9tV8q//r22V/Hv+V0P+r22VOZf/GvJ/bavMufzXODP/VzlTtdIZLev/2+T/8VaZtTT+//f8deoqn8u95D+f3//9/l/lzM91lVlLo//lv4r+zyf/fv+vcub36iqzlkb+5b+K/s/n/K/1fxX7/3z63/P/KvKfz/N/v/9Xsf/Pp/+t/6vY/+ez/9f/VfR/vsrv6F8vgA0Z
   </data>
  </layer>
 </map>

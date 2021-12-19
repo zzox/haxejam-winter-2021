@@ -53,14 +53,16 @@ class PlayState extends FlxState {
     var winSound:FlxSound;
     var deathSound:FlxSound;
 
+    var isFinalLevel:Bool;
+
     override public function create() {
         super.create();
 
         camera.pixelPerfectRender = true;
 
-        // MD:
         final level = Game.levels[Game.state.level];
         var map = new TiledMap(level.path);
+        isFinalLevel = Game.levels.length == Game.state.level + 1;
 
         FlxEcho.init(
             {
@@ -87,6 +89,7 @@ class PlayState extends FlxState {
 
         createTriangles(map, SouthWest, terrain);
         createTriangles(map, SouthEast, terrain);
+        createTriangles(map, NorthEast, terrain);
         createSquares(map, terrain);
         createEnd(map);
         createSpikes(map, spikes);
@@ -117,7 +120,7 @@ class PlayState extends FlxState {
             if (Game.state.seenLevel) { 
                 seenLevel();
             } else {
-                showLevel(Math.sqrt(Math.pow(player.x - end.x, 2) + Math.pow(player.x - end.x, 2)));
+                showLevel(Math.sqrt(Math.pow(player.x - end.x, 2) + Math.pow(player.x - end.x, 2)), Game.state.level + 1, level.name);
             }
         });
         add(curtain);
@@ -130,6 +133,10 @@ class PlayState extends FlxState {
             final bgSound = FlxG.sound.play(AssetPaths.win__mp3, 0.5, true, FlxG.sound.defaultMusicGroup, false);
             envSound.persist = true;
             bgSound.persist = true;
+        }
+
+        if (isFinalLevel) {
+            FlxTween.tween(FlxG.sound.defaultMusicGroup.sounds[1], {volume: 0.0}, 6);
         }
 
         dingSound = FlxG.sound.load(AssetPaths.ding__mp3, 0.75);
@@ -317,7 +324,7 @@ class PlayState extends FlxState {
         );
     }
 
-    function showLevel (dist:Float) {
+    function showLevel (dist:Float, levelNum:Int, levelName:String) {
         final showDistance = clamp(1.0, 4.0, 0.5 + dist / 2000);
         new FlxTimer().start(0.5, (_:FlxTimer) -> {
             // FlxTween.tween(camera, { zoom: 0.5 }, 0.5).then(FlxTween.tween(camera, { zoom: 1 }, 0.5, { startDelay: dist / 2500 * 2 }));
@@ -344,6 +351,15 @@ class PlayState extends FlxState {
                 }
             ));
         });
+
+        final levelText = makeText('Level $levelNum: $levelName');
+        levelText.scale.set(2, 2);
+        // weird math because of scale
+        levelText.setPosition(FlxG.camera.width * 0.5 - levelText.width, 128);
+        new FlxTimer().start(3, (_:FlxTimer) -> {
+            levelText.visible = false;
+        });
+        add(levelText);
     }
 
     function seenLevel () {
@@ -384,5 +400,15 @@ class PlayState extends FlxState {
         }
         emitter.emitting = false;
         return emitter;
+    }
+
+    function makeText (textString:String, x:Int = 0, y:Int = 0) {
+        final text = generateText();
+        text.color = 0xffdeeed6;
+        text.text = textString;
+        text.letterSpacing = -1;
+        text.scrollFactor.set(0, 0);
+        text.setPosition(x, y);
+        return text;
     }
 }

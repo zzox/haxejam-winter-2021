@@ -68,6 +68,8 @@ class Player extends FlxSprite {
         animation.add('roll-medium-left', [2, 3], 6);
         animation.add('roll-fast-right', [4, 5, 6, 7], 12);
         animation.add('roll-fast-left', [8, 9, 10, 11], 12);
+        animation.add('roll-very-fast-right', [4, 5, 6, 7], 30);
+        animation.add('roll-very-fast-left', [8, 9, 10, 11], 30);
         animation.add('glide', [12, 13], 12);
         animation.add('glide-still', [14]);
         animation.play('ball-still');
@@ -170,11 +172,17 @@ class Player extends FlxSprite {
                     } else if (dirLastPressed == Right) {
                         animation.play('roll-medium-right');
                     }
+                } else if (compVel < 250) {
+                    if (dirLastPressed == Left) {
+                        animation.play('roll-fast-left');
+                    } else if (dirLastPressed == Right) {
+                        animation.play('roll-fast-right');
+                    }
                 } else {
                     if (velocity.x < 0) {
-                        animation.play('roll-fast-left');
+                        animation.play('roll-very-fast-left');
                     } else {
-                        animation.play('roll-fast-right');
+                        animation.play('roll-very-fast-right');
                     }
                 }
             }

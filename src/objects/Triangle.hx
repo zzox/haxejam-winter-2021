@@ -14,8 +14,8 @@ class Triangle extends FlxSprite {
         makeGraphic(w, h, 0x00FFFFFF);
         var verts = [ [0, 0], [w, 0], [w, h], [0, h] ];
         switch d {
-            case NorthEast: verts.splice(2, 1);
-            case NorthWest: verts.splice(3, 1);
+            case NorthEast: verts.splice(3, 1);
+            case NorthWest: verts.splice(2, 1);
             case SouthEast: verts.splice(0, 1);
             case SouthWest: verts.splice(1, 1);
         }
