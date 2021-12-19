@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="800" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="75">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="600" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="75">
  <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="16" columns="4">
   <image source="../../images/tilesets/tiles.png" width="64" height="64"/>
  </tileset>
@@ -25,7 +25,7 @@
   <object id="26" x="0" y="32" width="32" height="800"/>
  </objectgroup>
  <objectgroup id="6" name="end">
-  <object id="35" x="12432" y="192" width="16" height="64"/>
+  <object id="35" x="8800" y="288" width="16" height="64"/>
  </objectgroup>
  <objectgroup id="4" name="se-triangles">
   <object id="19" x="631" y="756" width="73" height="60"/>
@@ -33,9 +33,9 @@
   <object id="21" x="498" y="784" width="205.333" height="32"/>
   <object id="22" x="432" y="800" width="272" height="16"/>
  </objectgroup>
- <layer id="5" name="tiles" width="800" height="64">
+ <layer id="5" name="tiles" width="600" height="64">
   <data encoding="base64" compression="zlib">
-   eJzt20EKgDAMRcGqiAvvf996BSn+GJiB7EN2j9IxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+ZXtmbzLHRzcAAAAyzuoFXrirFwAAAJboDwAAIEV/AAAAKfoDAABI0R8AAEBKp/64qhcAAACW6A8AACBFfwAAACn6AwAASOnUH/6fAwBAb536w/sHAAD0pj8AAICUCaniAQE=
+   eJzt2kEKgDAMRcGqiAvvf996hApfQ2AGsg9ZPUrHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/bM/sTeb46AYAAEln9QIv3NULAAAs0FcAAFn6CgAgS18BAGTpKwCArE59dVUvAACwQF8BAGTpKwCALH0FAJDVqa/8bwcAOujUV96vAIAO9BUAQNYE5a8BAQ==
   </data>
  </layer>
 </map>

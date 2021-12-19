@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="192" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="103">
+ <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="16" columns="4">
+  <image source="../../images/tilesets/tiles.png" width="64" height="64"/>
+ </tileset>
+ <objectgroup id="2" name="sw-triangles">
+  <object id="1" x="32" y="608" width="32" height="208"/>
+  <object id="2" x="32" y="624" width="48" height="192"/>
+  <object id="3" x="32" y="640" width="64" height="176"/>
+  <object id="4" x="32" y="656" width="80" height="160"/>
+  <object id="5" x="32" y="672" width="96" height="144"/>
+  <object id="6" x="32" y="688" width="112" height="128"/>
+  <object id="7" x="32" y="704" width="130" height="112"/>
+  <object id="8" x="32" y="720" width="148" height="96"/>
+  <object id="9" x="32" y="736" width="160" height="80"/>
+  <object id="10" x="32" y="752" width="176" height="64"/>
+  <object id="11" x="32" y="768" width="208" height="48"/>
+  <object id="12" x="32" y="784" width="260" height="32"/>
+  <object id="13" x="32" y="800" width="320" height="16"/>
+  <object id="18" x="32" y="32" width="12" height="782.667"/>
+  <object id="37" x="32" y="240" width="24" height="578.047"/>
+  <object id="59" x="752" y="784" width="16" height="224"/>
+  <object id="60" x="752" y="816" width="32" height="192"/>
+  <object id="61" x="752" y="848" width="48" height="160"/>
+  <object id="62" x="752" y="880" width="64" height="128"/>
+  <object id="63" x="752" y="896" width="80" height="112"/>
+  <object id="64" x="752" y="912" width="96" height="96"/>
+  <object id="65" x="752" y="928" width="128" height="80"/>
+  <object id="66" x="752" y="944" width="160" height="64"/>
+  <object id="67" x="752" y="960" width="208" height="48"/>
+  <object id="68" x="752" y="976" width="256" height="32"/>
+  <object id="69" x="752" y="992" width="320" height="16"/>
+ </objectgroup>
+ <objectgroup id="3" name="squares">
+  <object id="14" x="32" y="815.788" width="704" height="16"/>
+  <object id="26" x="0" y="32" width="32" height="800"/>
+  <object id="40" x="736" y="449.333" width="16" height="580.67"/>
+  <object id="44" x="880" y="0" width="16" height="832"/>
+  <object id="46" x="752" y="1008" width="608" height="16"/>
+  <object id="74" x="704" y="704" width="32" height="112"/>
+  <object id="75" x="640" y="256" width="240" height="16"/>
+  <object id="89" x="1200" y="0" width="16" height="800"/>
+  <object id="98" x="1344" y="768" width="16" height="240"/>
+ </objectgroup>
+ <objectgroup id="6" name="end">
+  <object id="35" x="1632" y="944" width="16" height="64"/>
+ </objectgroup>
+ <objectgroup id="4" name="se-triangles">
+  <object id="19" x="631" y="756" width="73" height="60"/>
+  <object id="20" x="576" y="768" width="128" height="48"/>
+  <object id="21" x="498" y="784" width="205.333" height="32"/>
+  <object id="22" x="432" y="800" width="272" height="16"/>
+  <object id="38" x="667.667" y="740.333" width="36.3333" height="75.3333"/>
+  <object id="42" x="688" y="704" width="16" height="112"/>
+  <object id="78" x="1271" y="948" width="73" height="60"/>
+  <object id="79" x="1216" y="960" width="128" height="48"/>
+  <object id="80" x="1138" y="976" width="205.333" height="32"/>
+  <object id="81" x="1072" y="992" width="272" height="16"/>
+  <object id="82" x="1307.67" y="932.333" width="36.3333" height="75.3333"/>
+  <object id="83" x="1328" y="896" width="16" height="112"/>
+ </objectgroup>
+ <objectgroup id="8" name="ne-triangles">
+  <object id="99" x="1328" y="768" width="32" height="112"/>
+  <object id="101" x="1312" y="768" width="48" height="48"/>
+ </objectgroup>
+ <objectgroup id="7" name="spikes">
+  <object id="76" x="640" y="272" width="240" height="12"/>
+  <object id="77" x="868" y="288" width="12" height="544"/>
+ </objectgroup>
+ <layer id="5" name="tiles" width="192" height="64">
+  <data encoding="base64" compression="zlib">
+   eJzt1kEKwjAURdGqiAM7cP+r1SWEWgjpPQf+/AXuINsGAAAAAAAAAAAAAAAAHLX/cVD1mT0AJtI/ZfqnTP+U6Z8y/VOmf8r0T5n+KdM/ZfqnTP+U6Z8y/VOmf8r0T5n+KdM/ZfqnTP+U6Z8y/VOmf8r0T5n+KdM/ZfqnTP+U6Z8y/VOmf8r0T5n+GXH73X2xewy8S/+MeM4ecMBr9gAuQ/+Urdj/e/YALkP/lOmfshX79//nLPqnbMX+/X84i/4p0z9l+qdM/5R9ATh8A+E=
+  </data>
+ </layer>
+</map>
