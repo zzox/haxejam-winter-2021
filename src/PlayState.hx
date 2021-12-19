@@ -355,7 +355,7 @@ class PlayState extends FlxState {
         final levelText = makeText('Level $levelNum: $levelName');
         levelText.scale.set(2, 2);
         // weird math because of scale
-        levelText.setPosition(FlxG.camera.width * 0.5 - levelText.width, 128);
+        levelText.setPosition(FlxG.camera.width * 0.5, 128);
         new FlxTimer().start(3, (_:FlxTimer) -> {
             levelText.visible = false;
         });

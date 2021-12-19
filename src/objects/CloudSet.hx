@@ -21,12 +21,11 @@ class CloudSet extends FlxGroup {
                 Math.random() * SMALL_CLOUD_MAX,
                 Math.random() * 125 + 62,
                 AssetPaths.small_clouds__png,
-                32,
-                16
+                64,
+                32
             );
             cloud.velocity.set(Math.random() * -10 - 10);
             cloud.scrollFactor.set(0.25, 0.25);
-            // cloud.scale.set(2, 2);
             smallClouds.add(cloud);
         }
 
@@ -36,12 +35,11 @@ class CloudSet extends FlxGroup {
                 Math.random() * BIG_CLOUD_MAX,
                 Math.random() * 250 + 125,
                 AssetPaths.big_clouds__png,
-                64,
-                32
+                128,
+                64
             );
             cloud.velocity.set(Math.random() * -20 - 20);
             cloud.scrollFactor.set(0.50, 0.50);
-            // cloud.scale.set(2, 2);
             bigClouds.add(cloud);
         }
 
