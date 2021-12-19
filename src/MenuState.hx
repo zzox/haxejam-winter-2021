@@ -1,3 +1,4 @@
+import data.Game;
 import display.Curtain;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -38,12 +39,12 @@ class MenuState extends FlxState {
         var text = new FlxBitmapText(fontAngelCode);
         text.text = 'Press SPACE or Z to Start';
         text.letterSpacing = -1;
-        text.setPosition((FlxG.width - text.width) / 2, 670);
+        text.setPosition((FlxG.width - text.width) / 2, 770);
         text.visible = false;
         add(text);
 
         final logo = new FlxSprite(0, 0, AssetPaths.logo_transparent__png);
-        logo.setPosition((FlxG.width - logo.width) * 0.5, 486);
+        logo.setPosition((FlxG.width - logo.width) * 0.5, 586);
         add(logo);
 
         add(new CloudSet());
@@ -51,6 +52,11 @@ class MenuState extends FlxState {
         curtain = new Curtain();
         curtain.open(() -> {});
         add(curtain);
+
+        FlxG.sound.defaultMusicGroup.sounds = [];
+
+        Game.state.level = 0;
+        Game.state.seenLevel = false;
 
         final envSound = FlxG.sound.play(AssetPaths.background__mp3, 0.75, true, FlxG.sound.defaultMusicGroup, false);
         envSound.persist = true;
@@ -60,7 +66,7 @@ class MenuState extends FlxState {
             canStart = true;
         });
 
-        FlxTween.tween(FlxG.camera, { "scroll.y": 470 }, 2);
+        FlxTween.tween(FlxG.camera, { "scroll.y": 570 }, 3);
     }
     
     override public function update (elapsed:Float) {

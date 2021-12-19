@@ -15,6 +15,7 @@ import flixel.effects.particles.FlxEmitter;
 import flixel.effects.particles.FlxParticle;
 import flixel.group.FlxGroup;
 import flixel.system.FlxSound;
+import flixel.text.FlxBitmapText;
 import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
@@ -43,6 +44,7 @@ class PlayState extends FlxState {
     var terrain:FlxGroup;
     var spikes:FlxGroup;
     public var end:FlxSprite;
+    var background:FlxSprite;
 
     var flyEmitter:FlxEmitter;
     var deathEmitter:FlxEmitter;
@@ -54,6 +56,7 @@ class PlayState extends FlxState {
     var deathSound:FlxSound;
 
     var isFinalLevel:Bool;
+    var canQuit:Bool = false;
 
     override public function create() {
         super.create();
@@ -75,9 +78,9 @@ class PlayState extends FlxState {
         FlxG.worldBounds.set(0, 0, map.fullWidth, map.fullHeight);
 
         // each level moves bg left
-        final bg = new FlxSprite(Game.state.level * -20, 0, AssetPaths.background_2__png);
-        bg.scrollFactor.set(0, 0);
-        add(bg);
+        background = new FlxSprite(Game.state.level * -20, 0, AssetPaths.background_2__png);
+        background.scrollFactor.set(0, 0);
+        add(background);
 
         add(new CloudSet());
 
@@ -127,11 +130,8 @@ class PlayState extends FlxState {
 
         FlxG.camera.setScrollBounds(0, map.fullWidth, 0, map.fullHeight);
 
-        // TODO: put in menu state
         if (FlxG.sound.defaultMusicGroup.sounds.length < 2) {
-            final envSound = FlxG.sound.play(AssetPaths.background__mp3, 1, true, FlxG.sound.defaultMusicGroup, false);
             final bgSound = FlxG.sound.play(AssetPaths.win__mp3, 0.5, true, FlxG.sound.defaultMusicGroup, false);
-            envSound.persist = true;
             bgSound.persist = true;
         }
 
@@ -165,6 +165,10 @@ class PlayState extends FlxState {
             flyEmitter.emitting = true;
         } else {
             flyEmitter.emitting = false;
+        }
+
+        if (canQuit && FlxG.keys.anyJustPressed([Q, ESCAPE])) {
+            FlxG.switchState(new MenuState());
         }
     }
 
@@ -291,13 +295,17 @@ class PlayState extends FlxState {
         showPrompt('win');
         winSound.play();
 
-        new FlxTimer().start(1, (_:FlxTimer) -> {
-            curtain.close(() -> {});
-        });
-
-        new FlxTimer().start(2, (_:FlxTimer) -> {
-            FlxG.switchState(new PlayState());
-        });
+        if (isFinalLevel) {
+            showFinalLevel();
+        } else {
+            new FlxTimer().start(1, (_:FlxTimer) -> {
+                curtain.close(() -> {});
+            });
+            
+            new FlxTimer().start(2, (_:FlxTimer) -> {
+                FlxG.switchState(new PlayState());
+            });
+        }
     }
 
     function showPrompt (name:String) {
@@ -402,7 +410,7 @@ class PlayState extends FlxState {
         return emitter;
     }
 
-    function makeText (textString:String, x:Int = 0, y:Int = 0) {
+    function makeText (textString:String, x:Int = 0, y:Int = 0):FlxBitmapText {
         final text = generateText();
         text.color = 0xffdeeed6;
         text.text = textString;
@@ -410,5 +418,31 @@ class PlayState extends FlxState {
         text.scrollFactor.set(0, 0);
         text.setPosition(x, y);
         return text;
+    }
+
+    function showFinalLevel () {
+        final scrollTime = 5.0;
+        final endSong = FlxG.sound.play(AssetPaths.main_paino__mp3, 0, true);
+        FlxTween.tween(endSong, { volume: 1.0 }, scrollTime);
+        FlxTween.tween(FlxG.sound.defaultMusicGroup.sounds[0], { volume: 0.0 }, scrollTime);
+
+        FlxG.camera.setScrollBounds(null, null, null, null);
+        FlxTween.tween(FlxG.camera, { "scroll.x": FlxG.camera.scroll.x + 5000 }, scrollTime, { ease: FlxEase.cubeInOut });
+        FlxTween.tween(background, { x: -360 }, scrollTime, { ease: FlxEase.cubeInOut, onComplete: (_:FlxTween) -> {
+            final thanksText = makeText('Thanks for playing!', 64, 32);
+            thanksText.scale.set(2, 2);
+            add(thanksText);
+
+            new FlxTimer().start(1.5, (_:FlxTimer) -> {
+                final hfText = makeText('HaxeFlixel forever :)', 68, 80);
+                hfText.scale.set(2, 2);
+                add(hfText);
+            });
+
+            new FlxTimer().start(3, (_:FlxTimer) -> {
+                add(makeText('Press Q or ESCAPE to Quit', 16, 240));
+                canQuit = true;
+            });
+        }});
     }
 }
