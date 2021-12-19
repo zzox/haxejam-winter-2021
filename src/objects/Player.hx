@@ -22,6 +22,11 @@ enum PlayerState {
     Glide;
 }
 
+enum LrDir {
+    Left;
+    Right;
+}
+
 class Player extends FlxSprite { 
     static inline final BALL_ACCELERATION = 50;
     static inline final GLIDE_ACCELERATION = 500;
@@ -43,6 +48,8 @@ class Player extends FlxSprite {
     var glideToBallSound:FlxSound;
     var ballToGlideSound:FlxSound;
 
+    var dirLastPressed:LrDir = Right;
+
     public function new (x:Int, y:Int, scene:PlayState) {
         super(x, y);
         this.scene = scene;
@@ -51,12 +58,16 @@ class Player extends FlxSprite {
             elasticity: 1,
         });
         loadGraphic(AssetPaths.ball1__png, true, 16, 16);
-        animation.add('ball-still', [0]);
-        animation.add('roll-slow', [0, 1], 2);
-        animation.add('roll-medium', [0, 1], 6);
-        animation.add('roll-fast', [0, 1], 12);
-        animation.add('glide', [2, 3], 12);
-        animation.add('glide-still', [4]);
+        animation.add('ball-still-right', [0]);
+        animation.add('roll-slow-right', [0, 1], 2);
+        animation.add('roll-medium-right', [0, 1], 6);
+        animation.add('ball-still-left', [2]);
+        animation.add('roll-slow-left', [2, 3], 2);
+        animation.add('roll-medium-left', [2, 3], 6);
+        animation.add('roll-fast-right', [4, 5, 6, 7], 12);
+        animation.add('roll-fast-left', [8, 9, 10, 11], 12);
+        animation.add('glide', [12, 13], 12);
+        animation.add('glide-still', [14]);
         animation.play('ball-still');
 
         glideToBallSound = FlxG.sound.load(AssetPaths.glide_to_ball__mp3, 1);
@@ -124,15 +135,39 @@ class Player extends FlxSprite {
         if (scene.result == Lose) {
             animation.play('glide-still');
         } else {
+            final leftPressed = FlxG.keys.anyPressed([LEFT, A]);
+            final rightPressed = FlxG.keys.anyPressed([RIGHT, D]);
             if (state == Ball) {
-                if (compVel < 1) {
-                    animation.play('ball-still');
+                if (compVel < 1) {    
+                    if (leftPressed && !rightPressed) {
+                        animation.play('roll-slow-left');
+                    } else if (!leftPressed && rightPressed) {
+                        animation.play('roll-slow-right');
+                    } else {
+                        if (dirLastPressed == Left) {
+                            animation.play('ball-still-left');
+                        } else if (dirLastPressed == Right) {
+                            animation.play('ball-still-right');
+                        }
+                    }
                 } else if (compVel < 25) {
-                    animation.play('roll-slow');
+                    if (dirLastPressed == Left) {
+                        animation.play('roll-slow-left');
+                    } else if (dirLastPressed == Right) {
+                        animation.play('roll-slow-right');
+                    }
                 } else if (compVel < 100) {
-                    animation.play('roll-medium');
+                    if (dirLastPressed == Left) {
+                        animation.play('roll-medium-left');
+                    } else if (dirLastPressed == Right) {
+                        animation.play('roll-medium-right');
+                    }
                 } else {
-                    animation.play('roll-fast');
+                    if (velocity.x < 0) {
+                        animation.play('roll-fast-left');
+                    } else {
+                        animation.play('roll-fast-right');
+                    }
                 }
             }
         }
@@ -146,6 +181,7 @@ class Player extends FlxSprite {
             if (leftPressed) {
                 vel = -1;
                 holds.left += elapsed;
+                dirLastPressed = Left;
             } else {
                 holds.left = 0;
             }
@@ -153,6 +189,7 @@ class Player extends FlxSprite {
             if (rightPressed) {
                 vel = 1;
                 holds.right += elapsed;
+                dirLastPressed = Right;
             } else {
                 holds.right = 0;
             }
@@ -160,8 +197,10 @@ class Player extends FlxSprite {
             if (leftPressed && rightPressed) {
                 if (holds.right > holds.left) {
                     vel = -1;
+                    dirLastPressed = Left;
                 } else {
                     vel = 1;
+                    dirLastPressed = Right;
                 }
             }
 
