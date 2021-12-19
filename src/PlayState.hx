@@ -22,6 +22,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
 import objects.Box;
+import objects.CloudSet;
 import objects.Player;
 import objects.Triangle;
 
@@ -71,9 +72,11 @@ class PlayState extends FlxState {
         FlxG.worldBounds.set(0, 0, map.fullWidth, map.fullHeight);
 
         // each level moves bg left
-        final bg = new FlxSprite(-20 * Game.state.level, 0, AssetPaths.background_2__png);
+        final bg = new FlxSprite(Game.state.level * -20, 0, AssetPaths.background_2__png);
         bg.scrollFactor.set(0, 0);
         add(bg);
+
+        add(new CloudSet());
 
         terrain = new FlxGroup();
         add(terrain);
@@ -124,9 +127,9 @@ class PlayState extends FlxState {
             bgSound.persist = true;
         }
 
-        dingSound = FlxG.sound.load(AssetPaths.ding__mp3, 1);
-        winSound = FlxG.sound.load(AssetPaths.win_hit__mp3, 1);
-        deathSound = FlxG.sound.load(AssetPaths.death__mp3, 1);
+        dingSound = FlxG.sound.load(AssetPaths.ding__mp3, 0.75);
+        winSound = FlxG.sound.load(AssetPaths.win_hit__mp3, 0.75);
+        deathSound = FlxG.sound.load(AssetPaths.death__mp3, 0.75);
     }
 
     override public function update(elapsed:Float) {
@@ -264,7 +267,7 @@ class PlayState extends FlxState {
             curtain.close(() -> {});
         });
 
-        new FlxTimer().start(2.5, (_:FlxTimer) -> {
+        new FlxTimer().start(2, (_:FlxTimer) -> {
             FlxG.switchState(new PlayState());
         });
     }
@@ -287,13 +290,15 @@ class PlayState extends FlxState {
         promptSprite.scrollFactor.set(0, 0);
         add(promptSprite);
 
-        FlxTween.tween(promptSprite, { x: FlxG.camera.width * 0.5 - promptSprite.width * 0.5 }, 0.25).then(
-            FlxTween.tween(promptSprite, { x: FlxG.camera.width }, 0.25, { startDelay: 1 })
+        FlxTween.tween(promptSprite, { x: FlxG.camera.width * 0.5 - promptSprite.width * 0.5 }, 0.125).then(
+            // weird math vvv
+            FlxTween.tween(promptSprite, { x: FlxG.camera.width + promptSprite.width * 2 }, 0.125, { startDelay: name == 'win' ? 1 : 0.5 })
         );
     }
 
     function showLevel (dist:Float) {
         new FlxTimer().start(0.5, (_:FlxTimer) -> {
+            // FlxTween.tween(camera, { zoom: 0.5 }, 0.5).then(FlxTween.tween(camera, { zoom: 1 }, 0.5, { startDelay: dist / 2500 * 2 }));
             FlxTween.tween(
                 camera,
                 {

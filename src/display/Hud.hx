@@ -62,7 +62,6 @@ class Hud extends FlxGroup {
             arrow.visible = false;
         } else {
             final arrowDistance = clamp(20, 40, endDistance / 20);
-
             arrow.setPosition(
                 player.x + arrowDistance * Math.cos(angle * Math.PI / 180),
                 player.y + arrowDistance * Math.sin(angle * Math.PI / 180)
