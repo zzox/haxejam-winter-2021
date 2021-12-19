@@ -11,7 +11,6 @@ import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectLayer;
 import flixel.addons.editors.tiled.TiledTileLayer;
-import flixel.addons.plugin.taskManager.FlxTask;
 import flixel.effects.particles.FlxEmitter;
 import flixel.effects.particles.FlxParticle;
 import flixel.group.FlxGroup;
@@ -24,6 +23,7 @@ import flixel.util.FlxTimer;
 import objects.Box;
 import objects.CloudSet;
 import objects.Player;
+import objects.Spikes;
 import objects.Triangle;
 
 using echo.FlxEcho;
@@ -41,6 +41,7 @@ class PlayState extends FlxState {
     public var result:Results;
     public var player:Player;
     var terrain:FlxGroup;
+    var spikes:FlxGroup;
     public var end:FlxSprite;
 
     var flyEmitter:FlxEmitter;
@@ -81,10 +82,14 @@ class PlayState extends FlxState {
         terrain = new FlxGroup();
         add(terrain);
 
+        spikes = new FlxGroup();
+        add(spikes);
+
         createTriangles(map, SouthWest, terrain);
         createTriangles(map, SouthEast, terrain);
         createSquares(map, terrain);
         createEnd(map);
+        createSpikes(map, spikes);
         // TODO: have anim in two parts
         add(end);
 
@@ -166,6 +171,10 @@ class PlayState extends FlxState {
                 dingSound.play(true);
             }
         }});
+
+        player.listen(spikes, { enter: (_:Body, _:Body, d:Array<CollisionData>) -> {
+            lostLevel('collision');
+        }});
     }
 
     function createEnd (map:TiledMap) {
@@ -177,6 +186,18 @@ class PlayState extends FlxState {
         end.animation.add('spin', [0, 1, 2, 3], 12);
         end.animation.add('spin-fast', [0, 1, 2, 3], 48);
         end.animation.play('spin');
+    }
+
+    function createSpikes (map:TiledMap, spikes:FlxGroup) {
+        final spikesLayer = map.getLayer('spikes');
+        if (spikesLayer != null) {
+            final spikesObject = cast(spikesLayer, TiledObjectLayer).objects;
+            spikesObject.map((t: TiledObject) -> {
+                final spikeSquare = new Spikes(t.x, t.y, t.width, t.height);
+                spikeSquare.add_to_group(spikes);
+                return spikeSquare;
+            });
+        }
     }
 
     function createTriangles (map:TiledMap, dir:TriangleDir, terrain:FlxGroup) {
@@ -325,7 +346,7 @@ class PlayState extends FlxState {
     }
 
     function seenLevel () {
-        FlxG.camera.follow(player);
+        FlxG.camera.follow(player.lead);
         player.canMove = true;
         Game.state.seenLevel = true;
     }

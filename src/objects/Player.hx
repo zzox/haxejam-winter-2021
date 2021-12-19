@@ -31,6 +31,7 @@ class Player extends FlxSprite {
     static inline final BALL_ACCELERATION = 50;
     static inline final GLIDE_ACCELERATION = 500;
     static inline final MAX_GLIDE_Y_VEL = 100;
+    static inline final LEAD_DISTANCE = 64;
 
     var scene:PlayState;
     public var state:PlayerState = Ball;
@@ -38,6 +39,7 @@ class Player extends FlxSprite {
     public var xVel:Float = 0;
     public var yVel:Float = 0;
     public var canMove:Bool = false;
+    public var lead:FlxSprite;
     var holds:HoldsObj = {
         left: 0,
         right: 0,
@@ -70,6 +72,10 @@ class Player extends FlxSprite {
         animation.add('glide-still', [14]);
         animation.play('ball-still');
 
+        lead = new FlxSprite(x, y);
+        lead.visible = false;
+        lead.setSize(16, 16);
+
         glideToBallSound = FlxG.sound.load(AssetPaths.glide_to_ball__mp3, 1);
         ballToGlideSound = FlxG.sound.load(AssetPaths.ball_to_glide__mp3, 1);
     }
@@ -91,6 +97,8 @@ class Player extends FlxSprite {
         if (state == Glide && scene.result != Lose) {
             flipX = this.get_body().velocity.x < 0;
         }
+
+        lead.setPosition(x + LEAD_DISTANCE, y);
 
         super.update(elapsed);
 
