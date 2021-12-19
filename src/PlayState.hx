@@ -156,7 +156,7 @@ class PlayState extends FlxState {
             winLevel();
         }
 
-        if (FlxG.keys.anyJustPressed([ESCAPE, R])) {
+        if (FlxG.keys.anyJustPressed([R])) {
             lostLevel('restart');
         }
 
